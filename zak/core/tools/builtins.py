@@ -1,0 +1,173 @@
+"""
+ZAK built-in tools — SIF graph read/write tools available to all agents.
+
+These are the platform-level tools that agents declare in capabilities.tools.
+Domain-specific tools can be added alongside these in their respective agent packages.
+"""
+
+from __future__ import annotations
+
+from typing import Any, Optional
+
+from zak.core.runtime.agent import AgentContext
+from zak.core.tools.substrate import zak_tool
+
+
+# ---------------------------------------------------------------------------
+# SIF Graph Read Tools
+# ---------------------------------------------------------------------------
+
+@zak_tool(
+    name="read_asset",
+    description="Read an asset node from the SIF graph by ID",
+    action_id="read_asset",
+    tags=["sif", "read", "asset"],
+)
+def read_asset(context: AgentContext, asset_id: str) -> Optional[dict[str, Any]]:
+    """Read a single asset node from the SIF graph."""
+    from zak.sif.graph.adapter import KuzuAdapter
+    adapter = KuzuAdapter()
+    return adapter.get_node(tenant_id=context.tenant_id, node_type="asset", node_id=asset_id)
+
+
+@zak_tool(
+    name="list_assets",
+    description="List all asset nodes in the SIF graph for the current tenant",
+    action_id="list_assets",
+    tags=["sif", "read", "asset"],
+)
+def list_assets(context: AgentContext) -> list[dict[str, Any]]:
+    """List all assets for the current tenant."""
+    from zak.sif.graph.adapter import KuzuAdapter
+    adapter = KuzuAdapter()
+    return adapter.get_nodes(tenant_id=context.tenant_id, node_type="asset")
+
+
+@zak_tool(
+    name="list_vulnerabilities",
+    description="List all vulnerability nodes for the current tenant",
+    action_id="list_vulnerabilities",
+    tags=["sif", "read", "vulnerability"],
+)
+def list_vulnerabilities(context: AgentContext) -> list[dict[str, Any]]:
+    """List all vulnerability nodes for the current tenant."""
+    from zak.sif.graph.adapter import KuzuAdapter
+    adapter = KuzuAdapter()
+    return adapter.get_nodes(tenant_id=context.tenant_id, node_type="vulnerability")
+
+
+@zak_tool(
+    name="list_vendors",
+    description="List all vendor nodes for the current tenant",
+    action_id="list_vendors",
+    tags=["sif", "read", "vendor"],
+)
+def list_vendors(context: AgentContext) -> list[dict[str, Any]]:
+    """List all vendor nodes for the current tenant."""
+    from zak.sif.graph.adapter import KuzuAdapter
+    adapter = KuzuAdapter()
+    return adapter.get_nodes(tenant_id=context.tenant_id, node_type="vendor")
+
+
+@zak_tool(
+    name="list_controls",
+    description="List all security control nodes (firewalls, IAM policies, MFA, DLP) for the current tenant",
+    action_id="list_controls",
+    tags=["sif", "read", "control"],
+)
+def list_controls(context: AgentContext) -> list[dict[str, Any]]:
+    """List all security control nodes for the current tenant."""
+    from zak.sif.graph.adapter import KuzuAdapter
+    adapter = KuzuAdapter()
+    return adapter.get_nodes(tenant_id=context.tenant_id, node_type="control")
+
+
+@zak_tool(
+    name="list_identities",
+    description="List all identity nodes (users, service accounts, API keys, roles) for the current tenant",
+    action_id="list_identities",
+    tags=["sif", "read", "identity"],
+)
+def list_identities(context: AgentContext) -> list[dict[str, Any]]:
+    """List all identity nodes for the current tenant."""
+    from zak.sif.graph.adapter import KuzuAdapter
+    adapter = KuzuAdapter()
+    return adapter.get_nodes(tenant_id=context.tenant_id, node_type="identity")
+
+
+@zak_tool(
+    name="list_risks",
+    description="List all computed risk nodes for the current tenant",
+    action_id="list_risks",
+    tags=["sif", "read", "risk"],
+)
+def list_risks(context: AgentContext) -> list[dict[str, Any]]:
+    """List all risk nodes for the current tenant."""
+    from zak.sif.graph.adapter import KuzuAdapter
+    adapter = KuzuAdapter()
+    return adapter.get_nodes(tenant_id=context.tenant_id, node_type="risk")
+
+
+@zak_tool(
+    name="list_ai_models",
+    description="List all AI/ML model nodes for the current tenant",
+    action_id="list_ai_models",
+    tags=["sif", "read", "ai_model"],
+)
+def list_ai_models(context: AgentContext) -> list[dict[str, Any]]:
+    """List all AI model nodes for the current tenant."""
+    from zak.sif.graph.adapter import KuzuAdapter
+    adapter = KuzuAdapter()
+    return adapter.get_nodes(tenant_id=context.tenant_id, node_type="ai_model")
+
+
+# ---------------------------------------------------------------------------
+# SIF Graph Write Tools
+# ---------------------------------------------------------------------------
+
+@zak_tool(
+    name="write_risk_node",
+    description="Write a RiskNode to the SIF graph",
+    action_id="write_risk_node",
+    tags=["sif", "write", "risk"],
+)
+def write_risk_node(context: AgentContext, risk_node: Any) -> None:
+    """Upsert a RiskNode into the SIF graph for the current tenant."""
+    from zak.sif.graph.adapter import KuzuAdapter
+    adapter = KuzuAdapter()
+    adapter.upsert_node(tenant_id=context.tenant_id, node=risk_node)
+
+
+# ---------------------------------------------------------------------------
+# Risk Tools
+# ---------------------------------------------------------------------------
+
+@zak_tool(
+    name="compute_risk",
+    description="Compute risk score for an asset using the ZAK risk propagation engine",
+    action_id="compute_risk",
+    tags=["risk", "compute"],
+)
+def compute_risk(
+    context: AgentContext,
+    criticality: str = "medium",
+    exposure: str = "internal",
+    exploitability: float = 0.5,
+    control_effectiveness: float = 0.5,
+    privilege_level: str = "medium",
+) -> dict[str, Any]:
+    """Compute and return a risk score dict from input parameters."""
+    from zak.sif.risk.propagation import RiskInputs, RiskPropagationEngine
+    inputs = RiskInputs(
+        base_risk=RiskPropagationEngine.criticality_to_base_risk(criticality),
+        exposure_factor=RiskPropagationEngine.exposure_to_factor(exposure),
+        exploitability=exploitability,
+        control_effectiveness=control_effectiveness,
+        privilege_amplifier=RiskPropagationEngine.privilege_to_amplifier(privilege_level),
+    )
+    output = RiskPropagationEngine.compute(inputs)
+    return {
+        "risk_score": output.risk_score,
+        "risk_level": output.risk_level,
+        "raw_score": output.raw_score,
+    }

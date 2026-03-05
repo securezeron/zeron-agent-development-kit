@@ -1,0 +1,55 @@
+site_name: ZAK Developer Docs
+site_description: Zeron Agentic Kit — Cyber Risk Management Agent Development Kit
+site_author: Zeron
+
+docs_dir: docs
+
+theme:
+  name: material
+  palette:
+    - scheme: slate
+      primary: deep purple
+      accent: cyan
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+    - scheme: default
+      primary: deep purple
+      accent: cyan
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+  features:
+    - navigation.tabs
+    - navigation.top
+    - content.code.copy
+    - search.highlight
+  icon:
+    logo: material/shield-lock
+
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Quickstart: 01_quickstart.md
+    - Core Concepts: 02_concepts.md
+  - Building Agents:
+    - Guide: 03_building_agents.md
+    - DSL Reference: 04_dsl_reference.md
+  - Platform:
+    - Tool Substrate: 05_tools.md
+    - Security Intelligence Fabric: 06_sif.md
+    - Multi-tenancy: 08_multitenancy.md
+  - Reference:
+    - CLI: 07_cli.md
+
+markdown_extensions:
+  - admonition
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - tables
+  - toc:
+      permalink: true

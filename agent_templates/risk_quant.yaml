@@ -1,0 +1,55 @@
+agent:
+  id: risk-quant-v1
+  name: "Risk Quantification Agent"
+  domain: risk_quant
+  version: "1.0.0"
+
+intent:
+  goal: "Compute and update risk scores for all critical assets using QBER model"
+  success_criteria:
+    - "All assets have updated RiskNode entries in the SIF graph"
+    - "EAL values computed for high/critical assets"
+  priority: high
+
+reasoning:
+  mode: probabilistic
+  autonomy_level: bounded
+  confidence_threshold: 0.75
+
+capabilities:
+  tools:
+    - sif_graph_read
+    - sif_graph_write
+    - risk_compute
+  data_access:
+    - asset_inventory
+    - vulnerability_scanner
+    - control_framework
+  graph_access:
+    - asset
+    - vulnerability
+    - control
+    - risk
+
+boundaries:
+  risk_budget: medium
+  allowed_actions:
+    - read_asset
+    - read_vulnerability
+    - read_control
+    - compute_risk
+    - write_risk_node
+  denied_actions:
+    - delete_asset
+    - modify_vulnerability
+  environment_scope:
+    - production
+    - staging
+
+safety:
+  guardrails:
+    - no_destructive_actions
+    - require_confidence_threshold
+    - redact_secrets
+  sandbox_profile: standard
+  audit_level: standard

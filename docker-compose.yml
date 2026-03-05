@@ -1,0 +1,14 @@
+# ZAK — Memgraph for the Security Intelligence Fabric
+services:
+  memgraph:
+    image: memgraph/memgraph-platform:latest
+    container_name: zak-memgraph
+    ports:
+      - "7687:7687"    # Bolt protocol
+      - "3001:3000"    # Memgraph Lab UI
+    volumes:
+      - memgraph_data:/var/lib/memgraph
+
+volumes:
+  memgraph_data:
+    driver: local
