@@ -22,7 +22,7 @@
 ## At a glance
 
 ```bash
-pip install zak
+pip install zin-adk
 
 # Scaffold a new agent
 zak init --name "My Risk Agent" --domain risk_quant --out ./agents
