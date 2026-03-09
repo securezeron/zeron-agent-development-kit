@@ -142,12 +142,20 @@ def validate(path: str) -> None:
 @click.option("--tenant", "-t", required=True, help="Tenant ID to run the agent under")
 @click.option("--env", "-e", default="staging", show_default=True,
               help="Target environment (production, staging, dev)")
-def run(path: str, tenant: str, env: str) -> None:
+@click.option("--meta", "-m", multiple=True, help="Metadata in KEY=VALUE format (e.g. -m target_url=https://...)")
+def run(path: str, tenant: str, env: str, meta: list[str]) -> None:
     """Run an agent defined by a YAML file under a tenant context."""
     from ulid import ULID
     from zak.core.runtime.agent import AgentContext
     from zak.core.runtime.executor import AgentExecutor
     from zak.tenants.context import TenantContext, TenantRegistry
+
+    # Parse metadata
+    metadata = {}
+    for m in meta:
+        if "=" in m:
+            k, v = m.split("=", 1)
+            metadata[k] = v
 
     # Validate DSL first
     result = validate_agent(path)
@@ -179,6 +187,7 @@ def run(path: str, tenant: str, env: str) -> None:
         trace_id=trace_id,
         dsl=dsl,
         environment=env,
+        metadata=metadata,
     )
 
     # Trigger agent module imports so @register_agent decorators fire
