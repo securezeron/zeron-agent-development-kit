@@ -1,0 +1,30 @@
+agent:
+  id: dpdp-compliance-agent
+  name: DPDP Compliance Agent
+  domain: compliance
+  version: 1.0.0
+  description: assess website compliance with the Indian DPDP Act 2023.
+
+intent:
+  goal: Analyze a website's privacy policy and practices against DPDP Act 2023 requirements.
+  success_criteria:
+    - A detailed compliance report with specific findings for each requirement.
+    - An overall compliance score and remediation roadmap.
+
+capabilities:
+  tools:
+    - fetch_website_content
+
+boundaries:
+  allowed_actions:
+    - fetch_website_content
+    - agent_execute
+
+reasoning:
+  mode: llm_react
+  autonomy_level: bounded
+  llm:
+    provider: openai
+    model: gpt-4o
+    temperature: 0.1
+    max_iterations: 5

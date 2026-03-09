@@ -15,7 +15,6 @@ from typing import Any
 from uuid import uuid4
 
 from zak.sif.graph.adapter import KuzuAdapter
-from zak.sif.schema.edges import AssetHasVulnerability
 from zak.sif.schema.nodes import AssetNode, ControlNode, VendorNode, VulnerabilityNode
 
 

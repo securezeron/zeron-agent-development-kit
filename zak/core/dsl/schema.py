@@ -42,6 +42,7 @@ class Domain(str, Enum):
     THREAT_DETECTION = "threat_detection"
     THREAT_INTEL    = "threat_intel"
     VULN_TRIAGE     = "vuln_triage"
+    USAGE_METRICS   = "usage_metrics"
 
 
 class ReasoningMode(str, Enum):

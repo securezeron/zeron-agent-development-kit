@@ -26,7 +26,7 @@ from typing import TYPE_CHECKING, Any
 from zak.core.edition import Edition, EditionError, get_edition
 
 if TYPE_CHECKING:
-    from zak.core.runtime.agent import BaseAgent
+    pass
 
 
 class AgentRegistration:

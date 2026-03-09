@@ -9,7 +9,6 @@ Agents themselves are never responsible for these cross-cutting concerns.
 from __future__ import annotations
 
 import time
-from typing import Any
 
 from zak.core.audit.events import (
     AgentCompletedEvent,
@@ -17,7 +16,6 @@ from zak.core.audit.events import (
     AgentStartedEvent,
     AuditEventType,
     PolicyBlockedEvent,
-    ToolCalledEvent,
 )
 from zak.core.audit.logger import AuditLogger
 from zak.core.policy.engine import PolicyDecision, PolicyEngine

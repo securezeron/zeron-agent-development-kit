@@ -1,0 +1,26 @@
+agent:
+  id: usage-metrics-agent
+  name: Usage Metrics Agent
+  domain: usage_metrics
+  version: 1.0.0
+  description: Automatically gather platform and tenant usage metrics.
+
+intent:
+  goal: Gather all usage related metrics from the Zeron platform.
+  success_criteria:
+    - A structured report containing platform-wide and tenant-specific metrics.
+
+capabilities:
+  tools:
+    - gather_platform_stats
+    - gather_tenant_stats
+
+boundaries:
+  allowed_actions:
+    - gather_platform_stats
+    - gather_tenant_stats
+    - agent_execute
+
+reasoning:
+  mode: deterministic
+  autonomy_level: bounded

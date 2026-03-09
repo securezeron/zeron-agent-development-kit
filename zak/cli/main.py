@@ -24,9 +24,9 @@ import zak
 from zak.core.dsl.parser import load_agent_yaml, validate_agent
 from zak.core.edition import Edition, EditionError, get_edition
 
-console = Console()
-
 from zak.agents import load_all_agents as _load_all_agents
+
+console = Console()
 
 
 @click.group()
@@ -142,17 +142,25 @@ def validate(path: str) -> None:
 @click.option("--tenant", "-t", required=True, help="Tenant ID to run the agent under")
 @click.option("--env", "-e", default="staging", show_default=True,
               help="Target environment (production, staging, dev)")
-def run(path: str, tenant: str, env: str) -> None:
+@click.option("--meta", "-m", multiple=True, help="Metadata in KEY=VALUE format (e.g. -m target_url=https://...)")
+def run(path: str, tenant: str, env: str, meta: list[str]) -> None:
     """Run an agent defined by a YAML file under a tenant context."""
     from ulid import ULID
     from zak.core.runtime.agent import AgentContext
     from zak.core.runtime.executor import AgentExecutor
-    from zak.tenants.context import TenantContext, TenantRegistry
+    from zak.tenants.context import TenantRegistry
+
+    # Parse metadata
+    metadata = {}
+    for m in meta:
+        if "=" in m:
+            k, v = m.split("=", 1)
+            metadata[k] = v
 
     # Validate DSL first
     result = validate_agent(path)
     if not result.valid:
-        console.print(f"[red]Cannot run: agent YAML is invalid.[/red]")
+        console.print("[red]Cannot run: agent YAML is invalid.[/red]")
         for e in result.errors:
             console.print(f"  [red]• {e}[/red]")
         sys.exit(1)
@@ -179,6 +187,7 @@ def run(path: str, tenant: str, env: str) -> None:
         trace_id=trace_id,
         dsl=dsl,
         environment=env,
+        metadata=metadata,
     )
 
     # Trigger agent module imports so @register_agent decorators fire
@@ -229,7 +238,7 @@ def run(path: str, tenant: str, env: str) -> None:
         console.print(f"\n[bold green]✅ Agent completed successfully[/bold green] "
                       f"in {result_obj.duration_ms:.1f}ms")
     else:
-        console.print(f"\n[bold red]❌ Agent failed[/bold red]")
+        console.print("\n[bold red]❌ Agent failed[/bold red]")
         for err in result_obj.errors:
             console.print(f"  [red]• {err}[/red]")
         sys.exit(1)

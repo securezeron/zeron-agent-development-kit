@@ -408,10 +408,10 @@ class KuzuAdapter:
                     src_labels = list(record["source_labels"] or [])
                     tgt_labels = list(record["target_labels"] or [])
                     source_label = next(
-                        (l for l in src_labels if l in valid_labels), src_labels[0] if src_labels else ""
+                        (label for label in src_labels if label in valid_labels), src_labels[0] if src_labels else ""
                     )
                     target_label = next(
-                        (l for l in tgt_labels if l in valid_labels), tgt_labels[0] if tgt_labels else ""
+                        (label for label in tgt_labels if label in valid_labels), tgt_labels[0] if tgt_labels else ""
                     )
                     edges.append({
                         "rel_type":     record["rel_type"],

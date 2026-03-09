@@ -172,7 +172,6 @@ class _LLMRiskQuantAgent:
 
     def execute(self, context: AgentContext) -> AgentResult:
         from zak.core.llm.registry import get_llm_client
-        from zak.core.llm.base import LLMResponse
         from zak.core.runtime.llm_agent import _build_openai_schema
         from zak.core.tools.builtins import (
             list_assets,

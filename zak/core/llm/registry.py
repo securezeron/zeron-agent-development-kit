@@ -36,7 +36,8 @@ def get_llm_client(
         ValueError: If the provider is unsupported.
         ImportError: If the required SDK is not installed.
     """
-    resolved_provider = provider or os.getenv("LLM_PROVIDER", "openai")
+    env_provider = os.getenv("LLM_PROVIDER")
+    resolved_provider = env_provider or provider or "openai"
 
     if resolved_provider == "openai":
         from zak.core.llm.openai_client import OpenAIClient
@@ -53,6 +54,10 @@ def get_llm_client(
     if resolved_provider == "local":
         from zak.core.llm.local import OllamaClient
         return OllamaClient(model=model, base_url=base_url)
+
+    if resolved_provider == "mock":
+        from zak.core.llm.mock_client import MockLLMClient
+        return MockLLMClient(model=model, api_key=api_key)
 
     raise ValueError(
         f"Unsupported LLM provider: '{resolved_provider}'. "
