@@ -1,0 +1,4 @@
+/* Hide the site name text in the header — the logo wordmark already contains the brand name */
+.md-header__topic:first-child .md-ellipsis {
+  display: none;
+}
