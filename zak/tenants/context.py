@@ -105,7 +105,7 @@ class TenantContext:
 
     def assert_active(self, registry: TenantRegistry) -> None:
         """Raises PermissionError if the tenant is not active."""
-        tenant = registry.get(self.tenant_id)
+        tenant = registry.get_tenant(self.tenant_id)
         if not tenant.active:
             raise PermissionError(
                 f"Tenant '{self.tenant_id}' is deactivated. Access denied."

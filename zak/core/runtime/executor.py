@@ -20,6 +20,7 @@ from zak.core.audit.events import (
 from zak.core.audit.logger import AuditLogger
 from zak.core.policy.engine import PolicyDecision, PolicyEngine
 from zak.core.runtime.agent import AgentContext, AgentResult, BaseAgent
+from zak.tenants.context import TenantContext, TenantRegistry
 
 
 class AgentExecutor:
@@ -44,6 +45,16 @@ class AgentExecutor:
 
     def run(self, agent: BaseAgent, context: AgentContext) -> AgentResult:
         """Execute `agent` within `context`, enforcing policy and emitting audit events."""
+        # Block deactivated tenants before any work or audit
+        registry = TenantRegistry.get()
+        if registry.exists(context.tenant_id):
+            tenant_ctx = TenantContext(
+                tenant_id=context.tenant_id,
+                trace_id=context.trace_id,
+                environment=context.environment,
+            )
+            tenant_ctx.assert_active(registry)
+
         logger = AuditLogger(
             tenant_id=context.tenant_id,
             agent_id=context.agent_id,
