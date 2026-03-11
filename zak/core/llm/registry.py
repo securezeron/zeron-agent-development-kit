@@ -41,11 +41,11 @@ def get_llm_client(
 
     if resolved_provider == "openai":
         from zak.core.llm.openai_client import OpenAIClient
-        return OpenAIClient(model=model, api_key=api_key)
+        return OpenAIClient(model=model, api_key=api_key, base_url=base_url)
 
     if resolved_provider == "anthropic":
         from zak.core.llm.anthropic_client import AnthropicClient
-        return AnthropicClient(model=model, api_key=api_key)
+        return AnthropicClient(model=model, api_key=api_key, base_url=base_url)
 
     if resolved_provider == "google":
         from zak.core.llm.google_client import GoogleClient

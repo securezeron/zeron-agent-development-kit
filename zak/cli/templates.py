@@ -209,10 +209,10 @@ class {class_name}(BaseAgent):
         default_denied_actions=["modify_source_code"],
     ),
     "vuln_triage": DomainTemplate(
-        yaml_template="""\\
+        yaml_template="""\
 agent:
-  id: {{agent_id}}
-  name: "{{agent_name}}"
+  id: {agent_id}
+  name: "{agent_name}"
   domain: vuln_triage
   version: "1.0.0"
 
@@ -254,9 +254,9 @@ safety:
   sandbox_profile: standard
   audit_level: standard
 """,
-        python_template="""\\
+        python_template="""\
 \"\"\"
-{{agent_name}} — ZAK Vulnerability Triage Agent.
+{agent_name} — ZAK Vulnerability Triage Agent.
 \"\"\"
 
 from __future__ import annotations
@@ -266,10 +266,10 @@ from zak.core.runtime.registry import register_agent
 
 @register_agent(
     domain="vuln_triage",
-    description="{{agent_name}}",
+    description="{agent_name}",
     version="1.0.0",
 )
-class {{class_name}}(BaseAgent):
+class {class_name}(BaseAgent):
     def execute(self, context: AgentContext) -> AgentResult:
         # Implement vulnerability triage logic
         return AgentResult.ok(context, output={{"triaged_count": 0, "results": []}})

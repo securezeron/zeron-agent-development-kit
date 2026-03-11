@@ -356,8 +356,24 @@ class KuzuAdapter:
         Example: upsert_edge(..., rel_type="AssetHasVulnerability")
         """
         props = properties or {}
-        # Cypher doesn't allow dynamic relationship types in MERGE, so we use
-        # string interpolation (rel_type is internal/trusted, not user input).
+
+        # Validate labels against known node types to prevent Cypher injection
+        valid_labels = set(NODE_LABEL_MAP.values()) | {"ReasoningTrace"}
+        if from_label not in valid_labels:
+            raise ValueError(
+                f"Invalid from_label '{from_label}'. Must be one of: {sorted(valid_labels)}"
+            )
+        if to_label not in valid_labels:
+            raise ValueError(
+                f"Invalid to_label '{to_label}'. Must be one of: {sorted(valid_labels)}"
+            )
+        # rel_type must be alphanumeric/underscores only (valid Cypher relationship type)
+        import re
+        if not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", rel_type):
+            raise ValueError(
+                f"Invalid rel_type '{rel_type}'. Must match [A-Za-z_][A-Za-z0-9_]*."
+            )
+
         query = f"""
         MATCH (a:{from_label} {{node_id: $from_id, tenant_id: $tenant_id}})
         MATCH (b:{to_label}   {{node_id: $to_id,   tenant_id: $tenant_id}})
@@ -442,6 +458,12 @@ class KuzuAdapter:
         """Close the Bolt driver connection pool."""
         self._driver.close()
 
+    def __enter__(self) -> KuzuAdapter:
+        return self
+
+    def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
+        self.close()
+
 
 # ── Internal helpers ───────────────────────────────────────────────────────────
 
@@ -488,5 +510,8 @@ def _deserialise_node(node: Any) -> dict[str, Any]:
     """
     props = dict(node)
     extra = props.pop("data", "{}")
-    props.update(json.loads(extra))
+    try:
+        props.update(json.loads(extra))
+    except (json.JSONDecodeError, TypeError):
+        logger.warning("Failed to deserialise 'data' blob for node %s", props.get("node_id"))
     return props

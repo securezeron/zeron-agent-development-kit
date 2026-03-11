@@ -29,7 +29,7 @@ from zak.sif.schema.nodes import RiskNode
 
 try:
     from zak.sif.graph.adapter import KuzuAdapter
-except Exception:
+except ImportError:
     KuzuAdapter = None  # type: ignore[assignment,misc]
 
 
@@ -117,13 +117,13 @@ class RiskQuantAgent(BaseAgent):
         exposure = asset.get("exposure_level", "internal")
 
         # Load worst-case vulnerability exploitability for this asset
-        vulns = self._adapter.get_nodes(tenant_id=tenant_id, node_type="vulnerability") if self._adapter else []
+        vulns = self._adapter.get_nodes(tenant_id=tenant_id, node_type="vulnerability") if self._adapter is not None else []
         max_exploitability = max(
             (float(v.get("exploitability", 0.5)) for v in vulns), default=0.5
         )
 
         # Load best control effectiveness
-        controls = self._adapter.get_nodes(tenant_id=tenant_id, node_type="control") if self._adapter else []
+        controls = self._adapter.get_nodes(tenant_id=tenant_id, node_type="control") if self._adapter is not None else []
         max_control_eff = max(
             (float(c.get("effectiveness", 0.5)) for c in controls), default=0.0
         )

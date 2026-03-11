@@ -22,7 +22,7 @@ from zak.core.runtime.registry import register_agent
 
 try:
     from zak.sif.graph.adapter import KuzuAdapter
-except Exception:
+except ImportError:
     KuzuAdapter = None  # type: ignore[assignment,misc]
 
 _FINDING_SEVERITY_SCORE = {"critical": 10, "high": 7, "medium": 4, "low": 1}

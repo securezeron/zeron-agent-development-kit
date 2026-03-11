@@ -12,6 +12,22 @@ from typing import Any, Optional
 from zak.core.runtime.agent import AgentContext
 from zak.core.tools.substrate import zak_tool
 
+import logging
+
+_logger = logging.getLogger(__name__)
+
+# Shared adapter singleton to avoid creating a new connection per tool call.
+_shared_adapter: Optional[Any] = None
+
+
+def _get_adapter() -> Any:
+    """Return a shared KuzuAdapter instance, creating it on first call."""
+    global _shared_adapter
+    if _shared_adapter is None:
+        from zak.sif.graph.adapter import KuzuAdapter
+        _shared_adapter = KuzuAdapter()
+    return _shared_adapter
+
 
 # ---------------------------------------------------------------------------
 # SIF Graph Read Tools
@@ -25,8 +41,7 @@ from zak.core.tools.substrate import zak_tool
 )
 def read_asset(context: AgentContext, asset_id: str) -> Optional[dict[str, Any]]:
     """Read a single asset node from the SIF graph."""
-    from zak.sif.graph.adapter import KuzuAdapter
-    adapter = KuzuAdapter()
+    adapter = _get_adapter()
     return adapter.get_node(tenant_id=context.tenant_id, node_type="asset", node_id=asset_id)
 
 
@@ -38,8 +53,7 @@ def read_asset(context: AgentContext, asset_id: str) -> Optional[dict[str, Any]]
 )
 def list_assets(context: AgentContext) -> list[dict[str, Any]]:
     """List all assets for the current tenant."""
-    from zak.sif.graph.adapter import KuzuAdapter
-    adapter = KuzuAdapter()
+    adapter = _get_adapter()
     return adapter.get_nodes(tenant_id=context.tenant_id, node_type="asset")
 
 
@@ -51,8 +65,7 @@ def list_assets(context: AgentContext) -> list[dict[str, Any]]:
 )
 def list_vulnerabilities(context: AgentContext) -> list[dict[str, Any]]:
     """List all vulnerability nodes for the current tenant."""
-    from zak.sif.graph.adapter import KuzuAdapter
-    adapter = KuzuAdapter()
+    adapter = _get_adapter()
     return adapter.get_nodes(tenant_id=context.tenant_id, node_type="vulnerability")
 
 
@@ -64,8 +77,7 @@ def list_vulnerabilities(context: AgentContext) -> list[dict[str, Any]]:
 )
 def list_vendors(context: AgentContext) -> list[dict[str, Any]]:
     """List all vendor nodes for the current tenant."""
-    from zak.sif.graph.adapter import KuzuAdapter
-    adapter = KuzuAdapter()
+    adapter = _get_adapter()
     return adapter.get_nodes(tenant_id=context.tenant_id, node_type="vendor")
 
 
@@ -77,8 +89,7 @@ def list_vendors(context: AgentContext) -> list[dict[str, Any]]:
 )
 def list_controls(context: AgentContext) -> list[dict[str, Any]]:
     """List all security control nodes for the current tenant."""
-    from zak.sif.graph.adapter import KuzuAdapter
-    adapter = KuzuAdapter()
+    adapter = _get_adapter()
     return adapter.get_nodes(tenant_id=context.tenant_id, node_type="control")
 
 
@@ -90,8 +101,7 @@ def list_controls(context: AgentContext) -> list[dict[str, Any]]:
 )
 def list_identities(context: AgentContext) -> list[dict[str, Any]]:
     """List all identity nodes for the current tenant."""
-    from zak.sif.graph.adapter import KuzuAdapter
-    adapter = KuzuAdapter()
+    adapter = _get_adapter()
     return adapter.get_nodes(tenant_id=context.tenant_id, node_type="identity")
 
 
@@ -103,8 +113,7 @@ def list_identities(context: AgentContext) -> list[dict[str, Any]]:
 )
 def list_risks(context: AgentContext) -> list[dict[str, Any]]:
     """List all risk nodes for the current tenant."""
-    from zak.sif.graph.adapter import KuzuAdapter
-    adapter = KuzuAdapter()
+    adapter = _get_adapter()
     return adapter.get_nodes(tenant_id=context.tenant_id, node_type="risk")
 
 
@@ -116,8 +125,7 @@ def list_risks(context: AgentContext) -> list[dict[str, Any]]:
 )
 def list_ai_models(context: AgentContext) -> list[dict[str, Any]]:
     """List all AI model nodes for the current tenant."""
-    from zak.sif.graph.adapter import KuzuAdapter
-    adapter = KuzuAdapter()
+    adapter = _get_adapter()
     return adapter.get_nodes(tenant_id=context.tenant_id, node_type="ai_model")
 
 
@@ -133,8 +141,7 @@ def list_ai_models(context: AgentContext) -> list[dict[str, Any]]:
 )
 def write_risk_node(context: AgentContext, risk_node: Any) -> None:
     """Upsert a RiskNode into the SIF graph for the current tenant."""
-    from zak.sif.graph.adapter import KuzuAdapter
-    adapter = KuzuAdapter()
+    adapter = _get_adapter()
     adapter.upsert_node(tenant_id=context.tenant_id, node=risk_node)
 
 
