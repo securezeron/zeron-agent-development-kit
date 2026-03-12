@@ -21,9 +21,12 @@ class AnthropicClient(LLMClient):
         self,
         model: str | None = None,
         api_key: str | None = None,
+        base_url: str | None = None,
     ) -> None:
         self.model = model or os.getenv("LLM_MODEL", "claude-opus-4-5")
         self.api_key = api_key or os.getenv("LLM_API_KEY") or os.getenv("ANTHROPIC_API_KEY")
+        self.base_url = base_url
+        self._client: Any = None
 
     def chat(
         self,
@@ -40,8 +43,13 @@ class AnthropicClient(LLMClient):
             ) from exc
 
         import httpx
-        http_client = httpx.Client(verify=False)
-        client = anthropic.Anthropic(api_key=self.api_key, http_client=http_client)
+        if self._client is None:
+            http_client = httpx.Client(verify=False)
+            kwargs: dict[str, Any] = {"api_key": self.api_key, "http_client": http_client}
+            if self.base_url:
+                kwargs["base_url"] = self.base_url
+            self._client = anthropic.Anthropic(**kwargs)
+        client = self._client
 
         # Separate system message from conversation history
         system_content: str | None = None
@@ -111,6 +119,7 @@ class AnthropicClient(LLMClient):
             model=self.model,
             messages=conv_messages,
             max_tokens=max_tokens,
+            temperature=temperature,
         )
         if system_content:
             kwargs["system"] = system_content

@@ -28,8 +28,9 @@ from __future__ import annotations
 import abc
 import inspect
 import json
+import typing
 import uuid
-from typing import Any, Callable, Iterator
+from typing import Any, Callable, Iterator, Union
 
 from zak.core.audit.events import AuditEventType
 from zak.core.audit.logger import AuditLogger
@@ -74,11 +75,9 @@ def _build_openai_schema(tools: list[Any]) -> list[dict[str, Any]]:
             ann = param.annotation
             json_type = _type_map.get(ann, "string")
 
-            # Check for Optional[X] via __args__
+            # Check for Optional[X] (Union[X, None]) via __args__
             origin = getattr(ann, "__origin__", None)
-            if origin is type(None):
-                json_type = "string"
-            elif origin is not None:
+            if origin is Union or origin is typing.Union:
                 args = getattr(ann, "__args__", ())
                 for a in args:
                     if a is not type(None):
@@ -262,7 +261,7 @@ class LLMAgent(BaseAgent, abc.ABC):
                     )
                     trace_entry["result"] = result
                     tool_results.append(self._tool_result_msg(tool_call, result))
-                except (PermissionError, ValueError, TypeError) as exc:
+                except Exception as exc:
                     err = {"error": str(exc)}
                     trace_entry["result"] = err
                     tool_results.append(self._tool_result_msg(tool_call, err))
@@ -530,7 +529,7 @@ class LLMAgent(BaseAgent, abc.ABC):
                         "result_preview": str(result)[:300],
                         "error": False,
                     }
-                except (PermissionError, ValueError, TypeError) as exc:
+                except Exception as exc:
                     err = {"error": str(exc)}
                     trace_entry["result"] = err
                     tool_results.append(self._tool_result_msg(tool_call, err))

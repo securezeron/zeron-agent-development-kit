@@ -7,6 +7,7 @@ Every operation carries a tenant_id — no raw graph access is possible without 
 
 from __future__ import annotations
 
+import threading
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Any
@@ -32,6 +33,7 @@ class TenantRegistry:
     """
 
     _instance: TenantRegistry | None = None
+    _lock: threading.Lock = threading.Lock()
 
     def __init__(self) -> None:
         # Only initialise _tenants on first construction
@@ -41,13 +43,17 @@ class TenantRegistry:
     @classmethod
     def get(cls) -> TenantRegistry:
         if cls._instance is None:
-            cls._instance = cls()
+            with cls._lock:
+                if cls._instance is None:
+                    cls._instance = cls()
         return cls._instance
 
     def __new__(cls) -> TenantRegistry:
         # Always return the same instance so TenantRegistry() == TenantRegistry.get()
         if cls._instance is None:
-            cls._instance = super().__new__(cls)
+            with cls._lock:
+                if cls._instance is None:
+                    cls._instance = super().__new__(cls)
         return cls._instance
 
     def register(self, tenant_id: str, name: str, **metadata: Any) -> Tenant:
@@ -105,7 +111,7 @@ class TenantContext:
 
     def assert_active(self, registry: TenantRegistry) -> None:
         """Raises PermissionError if the tenant is not active."""
-        tenant = registry.get(self.tenant_id)
+        tenant = registry.get_tenant(self.tenant_id)
         if not tenant.active:
             raise PermissionError(
                 f"Tenant '{self.tenant_id}' is deactivated. Access denied."

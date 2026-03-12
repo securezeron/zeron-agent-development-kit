@@ -23,9 +23,12 @@ class OpenAIClient(LLMClient):
         self,
         model: str | None = None,
         api_key: str | None = None,
+        base_url: str | None = None,
     ) -> None:
         self.model = model or os.getenv("LLM_MODEL", "gpt-4o")
         self.api_key = api_key or os.getenv("LLM_API_KEY") or os.getenv("OPENAI_API_KEY")
+        self.base_url = base_url
+        self._client: Any = None
 
     def chat(
         self,
@@ -41,7 +44,12 @@ class OpenAIClient(LLMClient):
                 "openai package is required. Install with: pip install 'zin-adk[llm]'"
             ) from exc
 
-        client = openai.OpenAI(api_key=self.api_key)
+        if self._client is None:
+            kwargs: dict[str, Any] = {"api_key": self.api_key}
+            if self.base_url:
+                kwargs["base_url"] = self.base_url
+            self._client = openai.OpenAI(**kwargs)
+        client = self._client
 
         kwargs: dict[str, Any] = dict(
             model=self.model,

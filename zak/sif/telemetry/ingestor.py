@@ -18,6 +18,20 @@ from zak.sif.graph.adapter import KuzuAdapter
 from zak.sif.schema.nodes import AssetNode, ControlNode, VendorNode, VulnerabilityNode
 
 
+def _safe_float(value: Any, default: float) -> float:
+    try:
+        return float(value)
+    except (ValueError, TypeError):
+        return default
+
+
+def _safe_int(value: Any, default: int) -> int:
+    try:
+        return int(value)
+    except (ValueError, TypeError):
+        return default
+
+
 class TelemetryIngestor:
     """
     Consumes raw telemetry events (dicts) and writes structured nodes/edges into the SIF.
@@ -74,11 +88,23 @@ class TelemetryIngestor:
             vuln_type=event.get("vuln_type", "cve"),
             cve_id=event.get("cve_id"),
             severity=event.get("severity", "medium"),
-            exploitability=float(event.get("exploitability", 0.5)),
+            exploitability=_safe_float(event.get("exploitability", 0.5), 0.5),
             cvss_score=event.get("cvss_score"),
             source=event.get("source", "telemetry"),
         )
         self._adapter.upsert_node(tenant_id, vuln)
+
+        # Create AssetHasVulnerability edge if asset_id is provided
+        asset_id = event.get("asset_id")
+        if asset_id:
+            self._adapter.upsert_edge(
+                tenant_id=tenant_id,
+                from_node_id=asset_id,
+                from_label="Asset",
+                to_node_id=vuln.node_id,
+                to_label="Vulnerability",
+                rel_type="AssetHasVulnerability",
+            )
 
     def _handle_control_updated(
         self, event: dict[str, Any], tenant_id: str
@@ -86,7 +112,7 @@ class TelemetryIngestor:
         node = ControlNode(
             node_id=event.get("control_id", str(uuid4())),
             control_type=event.get("control_type", "unknown"),
-            effectiveness=float(event.get("effectiveness", 0.5)),
+            effectiveness=_safe_float(event.get("effectiveness", 0.5), 0.5),
             automated=event.get("automated", True),
             source=event.get("source", "telemetry"),
         )
@@ -98,8 +124,8 @@ class TelemetryIngestor:
         node = VendorNode(
             node_id=event.get("vendor_id", str(uuid4())),
             vendor_type=event.get("vendor_type", "saas"),
-            tier=int(event.get("tier", 1)),
-            risk_score=float(event.get("risk_score", 0.0)),
+            tier=_safe_int(event.get("tier", 1), 1),
+            risk_score=_safe_float(event.get("risk_score", 0.0), 0.0),
             last_assessed=datetime.now(timezone.utc),
             source=event.get("source", "telemetry"),
         )

@@ -26,6 +26,7 @@ from __future__ import annotations
 
 import functools
 import inspect
+import threading
 from dataclasses import dataclass, field
 from typing import Any, Callable
 
@@ -55,6 +56,7 @@ class ToolRegistry:
     """
 
     _instance: ToolRegistry | None = None
+    _lock: threading.Lock = threading.Lock()
 
     def __init__(self) -> None:
         self._tools: dict[str, tuple[ToolMetadata, Callable]] = {}
@@ -62,7 +64,9 @@ class ToolRegistry:
     @classmethod
     def get(cls) -> ToolRegistry:
         if cls._instance is None:
-            cls._instance = cls()
+            with cls._lock:
+                if cls._instance is None:
+                    cls._instance = cls()
         return cls._instance
 
     def register(self, metadata: ToolMetadata, fn: Callable) -> None:
@@ -187,9 +191,10 @@ class ToolExecutor:
         )
 
         # Capability check — tool must be declared in agent's capabilities.tools
+        agent_tools = context.dsl.capabilities.tools
         if (
-            context.dsl.capabilities.tools
-            and meta.action_id not in context.dsl.capabilities.tools
+            agent_tools is not None
+            and meta.action_id not in agent_tools
         ):
             raise PermissionError(
                 f"Tool '{meta.action_id}' is not declared in agent capabilities.tools. "

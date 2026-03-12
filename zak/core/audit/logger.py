@@ -52,9 +52,16 @@ class AuditLogger:
 
     def emit(self, event: AuditEvent) -> None:
         """Emit a typed audit event as a structured log line."""
+        # Include all model fields (not just payload) so subclass fields
+        # like error, duration_ms, tool_name, reason are not silently dropped.
+        base_fields = {"event_type", "agent_id", "tenant_id", "trace_id", "timestamp"}
+        extra = {
+            k: v for k, v in event.model_dump(mode="json").items()
+            if k not in base_fields and v is not None
+        }
         self._log.info(
             event.event_type.value,
-            **event.payload,
+            **extra,
             timestamp=event.timestamp.isoformat(),
         )
 

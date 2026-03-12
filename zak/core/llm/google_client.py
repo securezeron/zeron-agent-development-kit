@@ -9,9 +9,13 @@ Supported models: gemini-1.5-pro, gemini-1.5-flash, gemini-2.0-flash
 from __future__ import annotations
 
 import os
+import threading
+import uuid
 from typing import Any
 
 from zak.core.llm.base import LLMClient, LLMResponse, ToolCall
+
+_google_configure_lock = threading.Lock()
 
 
 class GoogleClient(LLMClient):
@@ -40,7 +44,8 @@ class GoogleClient(LLMClient):
                 "Install with: pip install 'zin-adk[llm]'"
             ) from exc
 
-        genai.configure(api_key=self.api_key)
+        with _google_configure_lock:
+            genai.configure(api_key=self.api_key)
 
         # Build Gemini function declarations from OpenAI schema
         gemini_tools = []
@@ -101,7 +106,7 @@ class GoogleClient(LLMClient):
                 fc = part.function_call
                 tool_calls.append(
                     ToolCall(
-                        id=fc.name,
+                        id=f"call_{uuid.uuid4().hex[:12]}",
                         name=fc.name,
                         arguments=dict(fc.args),
                     )

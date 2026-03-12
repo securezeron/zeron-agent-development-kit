@@ -21,6 +21,7 @@ Usage:
 from __future__ import annotations
 
 import inspect
+import threading
 from typing import TYPE_CHECKING, Any
 
 from zak.core.edition import Edition, EditionError, get_edition
@@ -193,6 +194,7 @@ class _AgentRegistry:
 
 # Global singleton
 _registry_instance: _AgentRegistry | None = None
+_registry_lock = threading.Lock()
 
 
 class AgentRegistry:
@@ -208,7 +210,9 @@ class AgentRegistry:
     def get() -> _AgentRegistry:
         global _registry_instance
         if _registry_instance is None:
-            _registry_instance = _AgentRegistry()
+            with _registry_lock:
+                if _registry_instance is None:
+                    _registry_instance = _AgentRegistry()
         return _registry_instance
 
 
