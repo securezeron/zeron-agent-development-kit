@@ -35,7 +35,7 @@ def cli() -> None:
     """ZAK — Zeron Universal Security Agent Development Kit."""
 
 
-_OSS_DOMAINS = ["risk_quant", "vuln_triage", "appsec"]
+_OSS_DOMAINS = ["risk_quant", "vuln_triage", "appsec", "supply_chain"]
 
 
 @cli.command(name="init")

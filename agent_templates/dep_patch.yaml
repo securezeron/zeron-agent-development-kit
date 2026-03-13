@@ -1,0 +1,57 @@
+agent:
+  id: dep-patch-v1
+  name: "Dependency Patch Agent"
+  domain: supply_chain
+  version: "1.0.0"
+
+intent:
+  goal: "Scan repository dependencies for compatible patch/minor updates and create a PR"
+  success_criteria:
+    - "All updatable dependencies checked against npm registry"
+    - "Risk assessment completed for available updates"
+    - "PR created with compatible updates (unless dry-run)"
+  priority: medium
+
+reasoning:
+  mode: deterministic
+  autonomy_level: bounded
+  confidence_threshold: 0.75
+
+capabilities:
+  tools:
+    - fetch_package_json
+    - parse_dependencies
+    - fetch_registry_versions
+    - find_compatible_updates
+    - assess_update_risks
+    - create_update_pr
+  data_access:
+    - github_api
+    - npm_registry
+
+boundaries:
+  risk_budget: medium
+  allowed_actions:
+    - agent_execute
+    - fetch_package_json
+    - parse_dependencies
+    - fetch_registry_versions
+    - find_compatible_updates
+    - assess_update_risks
+    - create_update_pr
+  denied_actions:
+    - delete_branch
+    - force_push
+  environment_scope:
+    - staging
+    - production
+  approval_gates:
+    - create_update_pr
+
+safety:
+  guardrails:
+    - no_destructive_actions
+    - require_confidence_threshold
+    - redact_secrets
+  sandbox_profile: standard
+  audit_level: standard
