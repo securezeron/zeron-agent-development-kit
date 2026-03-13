@@ -191,15 +191,46 @@ def compute_risk(
     tags=["appsec", "read", "local_file"],
 )
 def read_local_code_file(context: AgentContext, file_path: str) -> str:
-    """Read a local file from disk. Only allows reading files from the active workspace."""
+    """
+    Read a local file from disk. Only allows reading files under the workspace root.
+
+    Workspace root is taken from ZAK_WORKSPACE_ROOT (default: process cwd).
+    Paths are resolved with os.path.realpath; access is denied if the resolved path
+    lies outside the workspace.
+    """
     import os
+    workspace_root = os.getenv("ZAK_WORKSPACE_ROOT", os.getcwd())
     try:
-        if not os.path.exists(file_path):
+        real_workspace = os.path.realpath(workspace_root)
+    except Exception:
+        real_workspace = os.path.realpath(os.getcwd())
+    if not os.path.isdir(real_workspace):
+        real_workspace = os.path.realpath(os.getcwd())
+
+    try:
+        abs_path = os.path.abspath(file_path)
+        real_path = os.path.realpath(abs_path)
+    except Exception as e:
+        return f"Error: Invalid path {file_path}: {e}"
+
+    try:
+        if os.path.commonpath([real_workspace, real_path]) != real_workspace:
+            raise PermissionError(
+                f"Access denied: '{file_path}' is outside the workspace ({real_workspace}). "
+                "Set ZAK_WORKSPACE_ROOT to allow a different root."
+            )
+    except ValueError:
+        raise PermissionError(
+            f"Access denied: '{file_path}' is outside the workspace ({real_workspace})."
+        )
+
+    try:
+        if not os.path.exists(real_path):
             return f"Error: File not found at {file_path}"
-            
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(real_path, "r", encoding="utf-8") as f:
             content = f.read()
-            
         return content[:20000]  # Cap size for LLM safety
+    except PermissionError:
+        raise
     except Exception as e:
         return f"Error reading file {file_path}: {e}"
