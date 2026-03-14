@@ -41,6 +41,7 @@ site/
 # Environment
 .env
 .env.*
+!.env.example
 
 # Claude Code
 .claude/

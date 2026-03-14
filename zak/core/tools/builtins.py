@@ -21,11 +21,11 @@ _shared_adapter: Optional[Any] = None
 
 
 def _get_adapter() -> Any:
-    """Return a shared KuzuAdapter instance, creating it on first call."""
+    """Return a shared graph adapter instance, creating it on first call."""
     global _shared_adapter
     if _shared_adapter is None:
-        from zak.sif.graph.adapter import KuzuAdapter
-        _shared_adapter = KuzuAdapter()
+        from zak.sif.graph.factory import create_adapter
+        _shared_adapter = create_adapter()
     return _shared_adapter
 
 
