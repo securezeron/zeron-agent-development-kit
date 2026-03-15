@@ -430,10 +430,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#documentation" class="md-nav__link">
+  <a href="#install" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Documentation
+        Install
       
     </span>
   </a>
@@ -445,6 +445,17 @@
     <span class="md-ellipsis">
       
         At a glance
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Documentation
       
     </span>
   </a>
@@ -534,7 +545,35 @@
   <span class="md-ellipsis">
     
   
-    Quickstart
+    Quickstart (Python)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="09_node_go_quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quickstart (Node.js / Go)
   
 
     
@@ -949,10 +988,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#documentation" class="md-nav__link">
+  <a href="#install" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Documentation
+        Install
       
     </span>
   </a>
@@ -964,6 +1003,17 @@
     <span class="md-ellipsis">
       
         At a glance
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Documentation
       
     </span>
   </a>
@@ -1006,7 +1056,37 @@
 </p>
 
 <h1 id="zak-documentation">ZAK Documentation<a class="headerlink" href="#zak-documentation" title="Permanent link">&para;</a></h1>
-<p><strong>ZAK</strong> is the <strong>Zeron Agent Development Kit</strong> — a Python SDK for building, deploying, and governing autonomous cybersecurity agents.</p>
+<p><strong>ZAK</strong> is the <strong>Zeron Agent Development Kit</strong> — an open-source ADK for building, deploying, and governing autonomous cybersecurity agents.</p>
+<p>Available for <strong>Python</strong>, <strong>Node.js/TypeScript</strong>, and <strong>Go</strong>.</p>
+<hr />
+<h2 id="install">Install<a class="headerlink" href="#install" title="Permanent link">&para;</a></h2>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:3"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Python</label><label for="__tabbed_1_2">Node.js</label><label for="__tabbed_1_3">Go</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>pip<span class="w"> </span>install<span class="w"> </span>zin-adk
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>npm<span class="w"> </span>install<span class="w"> </span>zin-adk
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>go<span class="w"> </span>get<span class="w"> </span>github.com/securezeron/zeron-agent-development-kit/adk/go@latest
+</code></pre></div>
+</div>
+</div>
+</div>
+<hr />
+<h2 id="at-a-glance">At a glance<a class="headerlink" href="#at-a-glance" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Scaffold a new agent</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>zak<span class="w"> </span>init<span class="w"> </span>--name<span class="w"> </span><span class="s2">&quot;My Risk Agent&quot;</span><span class="w"> </span>--domain<span class="w"> </span>risk_quant<span class="w"> </span>--out<span class="w"> </span>./agents
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c1"># Validate</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>zak<span class="w"> </span>validate<span class="w"> </span>agents/my-risk-agent.yaml
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="c1"># Run</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>zak<span class="w"> </span>run<span class="w"> </span>agents/my-risk-agent.yaml<span class="w"> </span>--tenant<span class="w"> </span>acme
+</code></pre></div>
 <hr />
 <h2 id="documentation">Documentation<a class="headerlink" href="#documentation" title="Permanent link">&para;</a></h2>
 <table>
@@ -1018,8 +1098,12 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="01_quickstart/">Quickstart</a></td>
+<td><a href="01_quickstart/">Quickstart (Python)</a></td>
 <td>Build and run your first agent in 5 minutes</td>
+</tr>
+<tr>
+<td><a href="09_node_go_quickstart/">Quickstart (Node.js / Go)</a></td>
+<td>Get started with the Node.js or Go ADK</td>
 </tr>
 <tr>
 <td><a href="02_concepts/">Core Concepts</a></td>
@@ -1052,37 +1136,22 @@
 </tbody>
 </table>
 <hr />
-<h2 id="at-a-glance">At a glance<a class="headerlink" href="#at-a-glance" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>pip<span class="w"> </span>install<span class="w"> </span>zin-adk
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="c1"># Scaffold a new agent</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>zak<span class="w"> </span>init<span class="w"> </span>--name<span class="w"> </span><span class="s2">&quot;My Risk Agent&quot;</span><span class="w"> </span>--domain<span class="w"> </span>risk_quant<span class="w"> </span>--out<span class="w"> </span>./agents
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="c1"># Implement agents/my_risk_agent.py → execute()</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="c1"># Validate</span>
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>zak<span class="w"> </span>validate<span class="w"> </span>agents/my-risk-agent.yaml
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="c1"># Run</span>
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>zak<span class="w"> </span>run<span class="w"> </span>agents/my-risk-agent.yaml<span class="w"> </span>--tenant<span class="w"> </span>acme
-</code></pre></div>
-<hr />
 <h2 id="platform-overview">Platform Overview<a class="headerlink" href="#platform-overview" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>┌─────────────────────────────────────────────────┐
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>│              Your Agent (BaseAgent)              │
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>│          define: execute() + @zak_tool           │
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>└─────────────────────┬───────────────────────────┘
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>                      │ calls ToolExecutor.call()
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>┌─────────────────────▼───────────────────────────┐
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>│             ZAK Platform Layer                   │
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>│  PolicyEngine  │  AuditLogger  │  AgentExecutor  │
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>└─────────────────────┬───────────────────────────┘
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>                      │ reads/writes
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>┌─────────────────────▼───────────────────────────┐
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>│      Security Intelligence Fabric (SIF)          │
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>│   Asset  │  Vulnerability  │  Risk  │  Vendor    │
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>│        (Memgraph, tenant-namespaced)              │
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>└─────────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>┌─────────────────────────────────────────────────┐
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>│              Your Agent (BaseAgent)              │
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>│          define: execute() + @zak_tool           │
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>└─────────────────────┬───────────────────────────┘
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>                      │ calls ToolExecutor.call()
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>┌─────────────────────▼───────────────────────────┐
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>│             ZAK Platform Layer                   │
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>│  PolicyEngine  │  AuditLogger  │  AgentExecutor  │
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>└─────────────────────┬───────────────────────────┘
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>                      │ reads/writes
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>┌─────────────────────▼───────────────────────────┐
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>│      Security Intelligence Fabric (SIF)          │
+<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>│   Asset  │  Vulnerability  │  Risk  │  Vendor    │
+<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>│        (Memgraph, tenant-namespaced)              │
+<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>└─────────────────────────────────────────────────┘
 </code></pre></div>
 <p>The key principle: <strong>you write <code>execute()</code>. The platform handles policy, audit, and graph persistence.</strong></p>
 

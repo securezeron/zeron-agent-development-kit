@@ -454,7 +454,35 @@
   <span class="md-ellipsis">
     
   
-    Quickstart
+    Quickstart (Python)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09_node_go_quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quickstart (Node.js / Go)
   
 
     
@@ -1095,17 +1123,30 @@
 
 
 <h1 id="cli-reference">CLI Reference<a class="headerlink" href="#cli-reference" title="Permanent link">&para;</a></h1>
-<p>ZAK includes a developer-facing CLI for scaffolding, validating, and running agents.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Activate your venv first</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nb">source</span><span class="w"> </span>.venv/bin/activate
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>zak<span class="w"> </span>--help
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>zak<span class="w"> </span>--version
+<p>ZAK includes a developer-facing CLI for scaffolding, validating, and running agents. The CLI is available in all three ADKs.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:3"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Python</label><label for="__tabbed_1_2">Node.js</label><label for="__tabbed_1_3">Go</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>pip<span class="w"> </span>install<span class="w"> </span>zin-adk
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>zak<span class="w"> </span>--help
 </code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>npm<span class="w"> </span>install<span class="w"> </span>zin-adk
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>npx<span class="w"> </span>zak<span class="w"> </span>--help
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>go<span class="w"> </span>install<span class="w"> </span>github.com/securezeron/zeron-agent-development-kit/adk/go/cmd/zak@latest
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>zak<span class="w"> </span>--help
+</code></pre></div>
+</div>
+</div>
+</div>
 <hr />
 <h2 id="zak-init"><code>zak init</code><a class="headerlink" href="#zak-init" title="Permanent link">&para;</a></h2>
 <p>Scaffold a new agent — generates a YAML definition and Python class.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>zak<span class="w"> </span>init<span class="w"> </span>--name<span class="w"> </span>&lt;agent-name&gt;<span class="w"> </span>--domain<span class="w"> </span>&lt;domain&gt;<span class="w"> </span><span class="o">[</span>--out<span class="w"> </span>&lt;directory&gt;<span class="o">]</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>zak<span class="w"> </span>init<span class="w"> </span>--name<span class="w"> </span>&lt;agent-name&gt;<span class="w"> </span>--domain<span class="w"> </span>&lt;domain&gt;<span class="w"> </span><span class="o">[</span>--out<span class="w"> </span>&lt;directory&gt;<span class="o">]</span>
 </code></pre></div>
 <table>
 <thead>
@@ -1138,23 +1179,23 @@
 </tbody>
 </table>
 <p><strong>Example:</strong>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>zak<span class="w"> </span>init<span class="w"> </span>--name<span class="w"> </span><span class="s2">&quot;Container Vuln Scanner&quot;</span><span class="w"> </span>--domain<span class="w"> </span>appsec<span class="w"> </span>--out<span class="w"> </span>./agents
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>zak<span class="w"> </span>init<span class="w"> </span>--name<span class="w"> </span><span class="s2">&quot;Container Vuln Scanner&quot;</span><span class="w"> </span>--domain<span class="w"> </span>appsec<span class="w"> </span>--out<span class="w"> </span>./agents
 </code></pre></div></p>
 <p><strong>Output:</strong>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>✅ Agent scaffolded!
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>YAML:   agents/container-vuln-scanner.yaml
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>Class:  agents/container_vuln_scanner.py
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>Next:
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>  1. Implement ContainerVulnScannerAgent.execute()
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>  2. zak validate agents/container-vuln-scanner.yaml
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>  3. zak run agents/container-vuln-scanner.yaml --tenant &lt;id&gt;
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>✅ Agent scaffolded!
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>YAML:   agents/container-vuln-scanner.yaml
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>Class:  agents/container_vuln_scanner.py
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>Next:
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>  1. Implement ContainerVulnScannerAgent.execute()
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>  2. zak validate agents/container-vuln-scanner.yaml
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>  3. zak run agents/container-vuln-scanner.yaml --tenant &lt;id&gt;
 </code></pre></div></p>
 <p>The generated YAML is <strong>immediately validated</strong> after creation. If there are any issues, they are reported.</p>
 <hr />
 <h2 id="zak-validate"><code>zak validate</code><a class="headerlink" href="#zak-validate" title="Permanent link">&para;</a></h2>
 <p>Validate a US-ADSL agent YAML definition.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>zak<span class="w"> </span>validate<span class="w"> </span>&lt;path&gt;
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>zak<span class="w"> </span>validate<span class="w"> </span>&lt;path&gt;
 </code></pre></div>
 <table>
 <thead>
@@ -1171,24 +1212,24 @@
 </tbody>
 </table>
 <p><strong>Success output:</strong>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>╭─ ZAK Validation ─────────────────────────────╮
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>│ ✅ Valid — Agent ID: container-vuln-scanner   │
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>╰───────────────────────────────────────────────╯
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>╭─ ZAK Validation ─────────────────────────────╮
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>│ ✅ Valid — Agent ID: container-vuln-scanner   │
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>╰───────────────────────────────────────────────╯
 </code></pre></div></p>
 <p><strong>Failure output:</strong>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>╭─ ❌ Validation Failed (2 error(s)) ──────────╮
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>│ • agent.id: must match slug pattern [a-z0-9-] │
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>│ • safety.sandbox_profile: red_team agents ... │
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>╰───────────────────────────────────────────────╯
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>╭─ ❌ Validation Failed (2 error(s)) ──────────╮
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>│ • agent.id: must match slug pattern [a-z0-9-] │
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>│ • safety.sandbox_profile: red_team agents ... │
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>╰───────────────────────────────────────────────╯
 </code></pre></div></p>
 <p>Exit code <code>1</code> on validation failure. Use in CI:
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># .github/workflows/zak.yml</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">zak validate agents/my-agent.yaml</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># .github/workflows/zak.yml</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">zak validate agents/my-agent.yaml</span>
 </code></pre></div></p>
 <hr />
 <h2 id="zak-run"><code>zak run</code><a class="headerlink" href="#zak-run" title="Permanent link">&para;</a></h2>
 <p>Run an agent defined by a YAML file under a specific tenant context.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>zak<span class="w"> </span>run<span class="w"> </span>&lt;path&gt;<span class="w"> </span>--tenant<span class="w"> </span>&lt;id&gt;<span class="w"> </span><span class="o">[</span>--env<span class="w"> </span>&lt;environment&gt;<span class="o">]</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>zak<span class="w"> </span>run<span class="w"> </span>&lt;path&gt;<span class="w"> </span>--tenant<span class="w"> </span>&lt;id&gt;<span class="w"> </span><span class="o">[</span>--env<span class="w"> </span>&lt;environment&gt;<span class="o">]</span>
 </code></pre></div>
 <table>
 <thead>
@@ -1221,58 +1262,58 @@
 </tbody>
 </table>
 <p><strong>Example:</strong>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>zak<span class="w"> </span>run<span class="w"> </span>agents/my-risk-agent.yaml<span class="w"> </span>--tenant<span class="w"> </span>acme<span class="w"> </span>--env<span class="w"> </span>production
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>zak<span class="w"> </span>run<span class="w"> </span>agents/my-risk-agent.yaml<span class="w"> </span>--tenant<span class="w"> </span>acme<span class="w"> </span>--env<span class="w"> </span>production
 </code></pre></div></p>
 <p><strong>Output:</strong>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>╭─ 🚀 ZAK Agent Run ─────────────────────────────────────╮
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>│ Agent:       My Risk Agent (my-risk-agent)              │
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>│ Tenant:      acme                                       │
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>│ Environment: production                                 │
-<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>│ Trace ID:    01HX2P... (ULID)                           │
-<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>╰─────────────────────────────────────────────────────────╯
-<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>
-<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>✅ Agent completed successfully in 142.3ms
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>╭─ 🚀 ZAK Agent Run ─────────────────────────────────────╮
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>│ Agent:       My Risk Agent (my-risk-agent)              │
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>│ Tenant:      acme                                       │
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>│ Environment: production                                 │
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>│ Trace ID:    01HX2P... (ULID)                           │
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>╰─────────────────────────────────────────────────────────╯
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>
+<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>✅ Agent completed successfully in 142.3ms
 </code></pre></div></p>
 <p><strong>Agent not registered:</strong>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>⚠ No agent registered for domain &#39;appsec&#39;.
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>  Implement a BaseAgent subclass and decorate it with @register_agent(domain=&quot;appsec&quot;).
-<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>
-<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>Registered domains: [&#39;risk_quant&#39;, &#39;supply_chain&#39;]
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>⚠ No agent registered for domain &#39;appsec&#39;.
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>  Implement a BaseAgent subclass and decorate it with @register_agent(domain=&quot;appsec&quot;).
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>Registered domains: [&#39;risk_quant&#39;, &#39;supply_chain&#39;]
 </code></pre></div></p>
 <p><strong>Audit logs</strong> (JSON, emitted to stdout during run):
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="p">{</span><span class="nt">&quot;event&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;agent.started&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;agent_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;my-risk-agent&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;tenant_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;acme&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;trace_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;01HX2P...&quot;</span><span class="p">}</span>
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="p">{</span><span class="nt">&quot;event&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;tool.called&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;tool&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;list_assets&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;agent_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;my-risk-agent&quot;</span><span class="p">,</span><span class="w"> </span><span class="err">...</span><span class="p">}</span>
-<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="p">{</span><span class="nt">&quot;event&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;tool.result&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;tool&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;list_assets&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;result_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;list&quot;</span><span class="p">,</span><span class="w"> </span><span class="err">...</span><span class="p">}</span>
-<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="p">{</span><span class="nt">&quot;event&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;agent.completed&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;success&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;duration_ms&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">142.3</span><span class="p">,</span><span class="w"> </span><span class="err">...</span><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="p">{</span><span class="nt">&quot;event&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;agent.started&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;agent_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;my-risk-agent&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;tenant_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;acme&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;trace_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;01HX2P...&quot;</span><span class="p">}</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="p">{</span><span class="nt">&quot;event&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;tool.called&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;tool&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;list_assets&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;agent_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;my-risk-agent&quot;</span><span class="p">,</span><span class="w"> </span><span class="err">...</span><span class="p">}</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="p">{</span><span class="nt">&quot;event&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;tool.result&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;tool&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;list_assets&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;result_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;list&quot;</span><span class="p">,</span><span class="w"> </span><span class="err">...</span><span class="p">}</span>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="p">{</span><span class="nt">&quot;event&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;agent.completed&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;success&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;duration_ms&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">142.3</span><span class="p">,</span><span class="w"> </span><span class="err">...</span><span class="p">}</span>
 </code></pre></div></p>
 <hr />
 <h2 id="zak-agents"><code>zak agents</code><a class="headerlink" href="#zak-agents" title="Permanent link">&para;</a></h2>
 <p>List all registered agent classes and their domains.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>zak<span class="w"> </span>agents
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>zak<span class="w"> </span>agents
 </code></pre></div>
 <p><strong>Output:</strong>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>             Registered Agents
-<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>┌──────────────┬──────────────────┬─────────┬──────────────────────┐
-<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>│ Domain       │ Class            │ Version │ Description          │
-<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>├──────────────┼──────────────────┼─────────┼──────────────────────┤
-<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>│ risk_quant   │ RiskQuantAgent   │ 1.0.0   │ Computes risk scores  │
-<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>│ supply_chain │ SupplyChainAgent │ 1.0.0   │ Assesses vendor risk │
-<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>└──────────────┴──────────────────┴─────────┴──────────────────────┘
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>             Registered Agents
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>┌──────────────┬──────────────────┬─────────┬──────────────────────┐
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>│ Domain       │ Class            │ Version │ Description          │
+<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>├──────────────┼──────────────────┼─────────┼──────────────────────┤
+<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>│ risk_quant   │ RiskQuantAgent   │ 1.0.0   │ Computes risk scores  │
+<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>│ supply_chain │ SupplyChainAgent │ 1.0.0   │ Assesses vendor risk │
+<a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>└──────────────┴──────────────────┴─────────┴──────────────────────┘
 </code></pre></div></p>
 <hr />
 <h2 id="zak-info"><code>zak info</code><a class="headerlink" href="#zak-info" title="Permanent link">&para;</a></h2>
 <p>Show ZAK platform info and registered domains.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>zak<span class="w"> </span>info
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>zak<span class="w"> </span>info
 </code></pre></div>
 <p><strong>Output:</strong>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>         ZAK Platform Info
-<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>┌────────────────────┬──────────────────────────┐
-<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>│ Version            │ 0.1.0                    │
-<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>│ Registered Domains │ risk_quant, supply_chain  │
-<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>│ Graph Backend      │ Kuzu → Memgraph           │
-<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>│ Multi-tenant       │ ✅ Namespace isolation    │
-<a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>│ Audit              │ ✅ Structured JSON        │
-<a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>└────────────────────┴──────────────────────────┘
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>         ZAK Platform Info
+<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>┌────────────────────┬──────────────────────────┐
+<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>│ Version            │ 0.1.0                    │
+<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a>│ Registered Domains │ risk_quant, supply_chain  │
+<a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>│ Graph Backend      │ Kuzu → Memgraph           │
+<a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a>│ Multi-tenant       │ ✅ Namespace isolation    │
+<a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a>│ Audit              │ ✅ Structured JSON        │
+<a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a>└────────────────────┴──────────────────────────┘
 </code></pre></div></p>
 <hr />
 <h2 id="exit-codes">Exit codes<a class="headerlink" href="#exit-codes" title="Permanent link">&para;</a></h2>
@@ -1296,16 +1337,16 @@
 </table>
 <hr />
 <h2 id="using-with-cicd">Using with CI/CD<a class="headerlink" href="#using-with-cicd" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="c1"># Example GitHub Actions step</span>
-<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Validate ZAK agent definitions</span>
-<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="w">    </span><span class="no">source .venv/bin/activate</span>
-<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="w">    </span><span class="no">for f in agents/*.yaml; do zak validate &quot;$f&quot;; done</span>
-<a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a>
-<a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run compliance agent (dry-run on staging)</span>
-<a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a><span class="w">    </span><span class="no">source .venv/bin/activate</span>
-<a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a><span class="w">    </span><span class="no">zak run agents/compliance-agent.yaml --tenant ci-tenant --env staging</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="c1"># Example GitHub Actions step</span>
+<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Validate ZAK agent definitions</span>
+<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="w">    </span><span class="no">source .venv/bin/activate</span>
+<a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a><span class="w">    </span><span class="no">for f in agents/*.yaml; do zak validate &quot;$f&quot;; done</span>
+<a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a>
+<a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run compliance agent (dry-run on staging)</span>
+<a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a><span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a id="__codelineno-19-9" name="__codelineno-19-9" href="#__codelineno-19-9"></a><span class="w">    </span><span class="no">source .venv/bin/activate</span>
+<a id="__codelineno-19-10" name="__codelineno-19-10" href="#__codelineno-19-10"></a><span class="w">    </span><span class="no">zak run agents/compliance-agent.yaml --tenant ci-tenant --env staging</span>
 </code></pre></div>
 
 
