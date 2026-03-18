@@ -1,0 +1,25 @@
+# fully_autonomous with low confidence — should fail validation
+agent:
+  id: low-conf-auto-v1
+  name: Low Confidence Autonomous Agent
+  domain: appsec
+  version: "1.0.0"
+
+intent:
+  goal: Autonomous scanning
+  priority: high
+
+reasoning:
+  mode: deterministic
+  autonomy_level: fully_autonomous
+  confidence_threshold: 0.5
+
+capabilities:
+  tools: []
+
+boundaries:
+  risk_budget: medium
+
+safety:
+  sandbox_profile: standard
+  audit_level: standard

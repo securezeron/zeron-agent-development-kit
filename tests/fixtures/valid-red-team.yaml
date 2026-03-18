@@ -1,0 +1,55 @@
+agent:
+  id: red-team-scanner-v1
+  name: Red Team Reconnaissance Scanner
+  domain: red_team
+  version: "1.0.0"
+
+intent:
+  goal: Perform authorized reconnaissance and vulnerability discovery
+  success_criteria:
+    - Enumerate attack surface
+    - Identify exploitable weaknesses
+  priority: critical
+
+reasoning:
+  mode: llm_react
+  autonomy_level: bounded
+  confidence_threshold: 0.9
+  llm:
+    provider: openai
+    model: gpt-4o
+    temperature: 0.1
+    max_iterations: 15
+    max_tokens: 8192
+
+capabilities:
+  tools:
+    - execute_python
+    - list_assets
+    - list_vulnerabilities
+  data_access:
+    - asset_inventory
+  graph_access:
+    - Asset
+    - Vulnerability
+
+boundaries:
+  risk_budget: high
+  allowed_actions:
+    - execute_python
+    - list_assets
+    - list_vulnerabilities
+  denied_actions:
+    - modify_production
+    - deploy_payload
+  environment_scope:
+    - staging
+  approval_gates:
+    - execute_exploit
+
+safety:
+  guardrails:
+    - no_data_exfiltration
+    - no_production_access
+  sandbox_profile: offensive_isolated
+  audit_level: verbose

@@ -130,11 +130,42 @@ def _satisfies_range(
     return False
 
 
-def _get_config(context: AgentContext, key: str, env_key: str, default: str = "") -> str:
-    """Read config from context.metadata first, then fall back to env var."""
+def _get_config(
+    context: AgentContext,
+    key: str,
+    env_key: str,
+    default: str = "",
+    integration_service: str = "",
+) -> str:
+    """Read config from context.metadata, integrations dict, or env var.
+
+    Resolution order (first non-empty wins):
+      1. context.metadata[key]                                  (flat, OSS style)
+      2. context.metadata["parameters"][key]                    (enterprise run params)
+      3. context.metadata["integrations"][integration_service]  (enterprise DB creds)
+      4. os.environ[env_key]                                    (env var fallback)
+    """
+    # 1. Direct flat metadata (OSS pattern / CLI -m flags)
     val = context.metadata.get(key, "")
     if val:
         return str(val)
+
+    # 2. Nested under "parameters" (enterprise UI passes run params here)
+    params = context.metadata.get("parameters", {})
+    if isinstance(params, dict):
+        val = params.get(key, "")
+        if val:
+            return str(val)
+
+    # 3. Integration credentials from DB (enterprise TenantIntegration)
+    if integration_service:
+        integrations = context.metadata.get("integrations", {})
+        if isinstance(integrations, dict):
+            val = integrations.get(integration_service, "")
+            if val:
+                return str(val)
+
+    # 4. Environment variable fallback
     return os.environ.get(env_key, default)
 
 
@@ -172,7 +203,7 @@ def fetch_package_json(
     package_path: str = "",
 ) -> dict[str, Any]:
     """Fetch and parse package.json from a GitHub repository."""
-    token = _get_config(context, "github_token", "GITHUB_TOKEN")
+    token = _get_config(context, "github_token", "GITHUB_TOKEN", integration_service="github")
     if not token:
         raise RuntimeError("GitHub token is required (metadata.github_token or GITHUB_TOKEN env)")
 
@@ -265,7 +296,9 @@ def fetch_registry_versions(
             context, "registry_url", "REGISTRY_URL", "https://registry.npmjs.org",
         )
     if not registry_token:
-        registry_token = _get_config(context, "registry_token", "REGISTRY_TOKEN")
+        registry_token = _get_config(
+            context, "registry_token", "REGISTRY_TOKEN", integration_service="npm_registry",
+        )
 
     registry_url = registry_url.rstrip("/")
     url = f"{registry_url}/{package_name}"
@@ -524,7 +557,7 @@ def create_update_pr(
     package_path: str = "package.json",
 ) -> dict[str, Any]:
     """Create a branch, commit updated package.json, and open a PR on GitHub."""
-    token = _get_config(context, "github_token", "GITHUB_TOKEN")
+    token = _get_config(context, "github_token", "GITHUB_TOKEN", integration_service="github")
     if not token:
         raise RuntimeError("GitHub token is required")
 

@@ -41,6 +41,19 @@ site/
 # Environment
 .env
 .env.*
+!.env.example
+
+# Node.js ADK
+adk/node/node_modules/
+adk/node/dist/
+adk/node/coverage/
+adk/node/*.tsbuildinfo
+adk/node/pnpm-lock.yaml
+
+# Go ADK
+adk/go/bin/
+adk/go/coverage.out
+adk/go/coverage.html
 
 # Claude Code
 .claude/

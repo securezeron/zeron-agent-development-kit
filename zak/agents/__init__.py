@@ -10,6 +10,7 @@ ALL_AGENT_MODULES: list[str] = [
     "zak.agents.compliance.dpdp_agent",
     "zak.agents.code_auditor.agent",
     "zak.agents.dep_patch.agent",
+    "zak.agents.slopsquatting.agent",
 ]
 
 

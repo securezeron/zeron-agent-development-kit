@@ -1,0 +1,48 @@
+name: Publish PyPI
+
+# Triggers on version tags like v0.1.4, v1.0.0, etc.
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+  id-token: write   # Required for PyPI trusted publishing
+
+jobs:
+  publish:
+    name: Publish to PyPI
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/zin-adk/
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install build tools
+        run: pip install build twine
+
+      - name: Install package (with dev deps for testing)
+        run: pip install -e ".[dev]"
+
+      - name: Lint
+        run: ruff check zak/
+
+      - name: Test
+        run: pytest tests/ -v --tb=short
+
+      - name: Build sdist and wheel
+        run: python -m build
+
+      - name: Verify package
+        run: twine check dist/*
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        # Uses trusted publishing (OIDC) — no API token needed.
+        # Configure at: https://pypi.org/manage/project/zin-adk/settings/publishing/

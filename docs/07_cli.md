@@ -1,14 +1,27 @@
 # CLI Reference
 
-ZAK includes a developer-facing CLI for scaffolding, validating, and running agents.
+ZAK includes a developer-facing CLI for scaffolding, validating, and running agents. The CLI is available in all three ADKs.
 
-```bash
-# Activate your venv first
-source .venv/bin/activate
+=== "Python"
 
-zak --help
-zak --version
-```
+    ```bash
+    pip install zin-adk
+    zak --help
+    ```
+
+=== "Node.js"
+
+    ```bash
+    npm install zin-adk
+    npx zak --help
+    ```
+
+=== "Go"
+
+    ```bash
+    go install github.com/securezeron/zeron-agent-development-kit/adk/go/cmd/zak@latest
+    zak --help
+    ```
 
 ---
 

@@ -248,7 +248,18 @@ class LLMAgent(BaseAgent, abc.ABC):
 
                 tool_fn = self._resolve_tool(tool_call.name)
                 if tool_fn is None:
-                    err = {"error": f"Unknown tool: {tool_call.name}"}
+                    available = [
+                        getattr(t, "_zak_tool", None).action_id
+                        for t in self.tools
+                        if getattr(t, "_zak_tool", None)
+                    ]
+                    err = {
+                        "error": (
+                            f"Unknown tool '{tool_call.name}'. "
+                            f"Available tools: {available}. "
+                            "Please use ONLY the tools listed above."
+                        ),
+                    }
                     trace_entry["result"] = err
                     tool_results.append(self._tool_result_msg(tool_call, err))
                     continue
@@ -502,7 +513,18 @@ class LLMAgent(BaseAgent, abc.ABC):
 
                 tool_fn = self._resolve_tool(tool_call.name)
                 if tool_fn is None:
-                    err = {"error": f"Unknown tool: {tool_call.name}"}
+                    available = [
+                        getattr(t, "_zak_tool", None).action_id
+                        for t in self.tools
+                        if getattr(t, "_zak_tool", None)
+                    ]
+                    err = {
+                        "error": (
+                            f"Unknown tool '{tool_call.name}'. "
+                            f"Available tools: {available}. "
+                            "Please use ONLY the tools listed above."
+                        ),
+                    }
                     trace_entry["result"] = err
                     tool_results.append(self._tool_result_msg(tool_call, err))
                     yield {

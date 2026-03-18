@@ -1,0 +1,20 @@
+agent:
+  id: overlap-test-v1
+  name: Overlap Test
+  domain: appsec
+  version: "1.0.0"
+
+intent:
+  goal: Test that overlapping allowed/denied actions fail validation
+  priority: medium
+
+reasoning:
+  mode: deterministic
+  autonomy_level: bounded
+
+boundaries:
+  allowed_actions:
+    - read_asset
+    - execute_python
+  denied_actions:
+    - execute_python

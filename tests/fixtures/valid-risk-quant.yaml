@@ -1,0 +1,55 @@
+agent:
+  id: risk-quant-v1
+  name: Risk Quantification Agent
+  domain: risk_quant
+  version: "1.0.0"
+
+intent:
+  goal: Quantify cybersecurity risk using the FAIR framework
+  success_criteria:
+    - Calculate annualized loss expectancy
+    - Map risk scenarios to FAIR taxonomy
+  priority: high
+
+reasoning:
+  mode: llm_react
+  autonomy_level: bounded
+  confidence_threshold: 0.8
+  llm:
+    provider: openai
+    model: gpt-4o
+    temperature: 0.2
+    max_iterations: 10
+    max_tokens: 4096
+
+capabilities:
+  tools:
+    - list_risks
+    - compute_risk
+    - list_assets
+    - execute_python
+  data_access:
+    - risk_register
+    - asset_inventory
+  graph_access:
+    - Risk
+    - Asset
+
+boundaries:
+  risk_budget: medium
+  allowed_actions:
+    - list_risks
+    - compute_risk
+    - list_assets
+    - execute_python
+  denied_actions: []
+  environment_scope:
+    - staging
+    - dev
+  approval_gates: []
+
+safety:
+  guardrails:
+    - no_data_exfiltration
+  sandbox_profile: standard
+  audit_level: standard

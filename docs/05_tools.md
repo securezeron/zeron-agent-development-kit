@@ -80,25 +80,67 @@ The `spawn_agent` tool allows parent agents (especially LLM-powered ones) to del
 
 ## Creating custom tools
 
-Use `@zak_tool` to create your own tools:
+=== "Python"
 
-```python
-from zak.core.runtime.agent import AgentContext
-from zak.core.tools.substrate import zak_tool
+    Use `@zak_tool` to create your own tools:
 
-@zak_tool(
-    name="lookup_threat_intel",
-    description="Fetch threat intelligence for a domain or IP",
-    action_id="lookup_threat_intel",   # used in YAML capabilities.tools and allowed_actions
-    tags=["threat_intel", "read"],
-)
-def lookup_threat_intel(context: AgentContext, target: str) -> dict:
-    """Query your threat intel provider."""
-    # context is injected automatically when using ToolExecutor.call()
-    # context.tenant_id, context.trace_id, context.dsl all available
-    response = your_intel_provider.query(target)
-    return {"threat_score": response.score, "incidents": response.incidents}
-```
+    ```python
+    from zak.core.runtime.agent import AgentContext
+    from zak.core.tools.substrate import zak_tool
+
+    @zak_tool(
+        name="lookup_threat_intel",
+        description="Fetch threat intelligence for a domain or IP",
+        action_id="lookup_threat_intel",
+        tags=["threat_intel", "read"],
+    )
+    def lookup_threat_intel(context: AgentContext, target: str) -> dict:
+        """Query your threat intel provider."""
+        response = your_intel_provider.query(target)
+        return {"threat_score": response.score, "incidents": response.incidents}
+    ```
+
+=== "Node.js"
+
+    Use `zakTool()` to create your own tools:
+
+    ```typescript
+    import { zakTool } from "zin-adk";
+
+    const lookupThreatIntel = zakTool({
+      name: "lookup_threat_intel",
+      description: "Fetch threat intelligence for a domain or IP",
+      parameters: { target: { type: "string" } },
+      execute: async (params, context) => {
+        const response = await yourIntelProvider.query(params.target);
+        return { threatScore: response.score, incidents: response.incidents };
+      },
+    });
+    ```
+
+=== "Go"
+
+    Use `NewZakTool()` to create your own tools:
+
+    ```go
+    import "github.com/securezeron/zeron-agent-development-kit/adk/go/pkg/tools"
+
+    scanTool := tools.NewZakTool(tools.ZakToolConfig{
+        Name:        "lookup_threat_intel",
+        Description: "Fetch threat intelligence for a domain or IP",
+        Execute: func(ctx context.Context, params map[string]any) (any, error) {
+            target := params["target"].(string)
+            resp, err := yourIntelProvider.Query(target)
+            if err != nil {
+                return nil, err
+            }
+            return map[string]any{
+                "threat_score": resp.Score,
+                "incidents":    resp.Incidents,
+            }, nil
+        },
+    })
+    ```
 
 **Rules for custom tools:**
 - The function must be importable before `ToolExecutor.call()` is used

@@ -38,6 +38,230 @@ def cli() -> None:
 _OSS_DOMAINS = ["risk_quant", "vuln_triage", "appsec", "supply_chain"]
 
 
+@cli.command()
+@click.option("--with-llm", is_flag=True, help="Use a real LLM provider (requires API key)")
+def quickstart(with_llm: bool) -> None:
+    """Run a demo risk quantification agent — no API keys, no Docker needed."""
+    from ulid import ULID
+
+    from zak.core.dsl.parser import load_agent_yaml
+    from zak.core.runtime.agent import AgentContext
+    from zak.core.runtime.executor import AgentExecutor
+    from zak.sif.graph.memory_adapter import InMemoryGraphAdapter
+    from zak.sif.schema.nodes import AssetNode, ControlNode, VulnerabilityNode
+    from zak.tenants.context import TenantRegistry
+
+    tenant_id = "demo-tenant"
+    trace_id = str(ULID())
+
+    console.print(Panel(
+        "[bold]ZAK Quickstart[/bold] — Risk Quantification Demo\n\n"
+        "No API keys, no Docker, no external dependencies required.\n"
+        "This demo uses an in-memory graph and deterministic risk scoring.",
+        title="[bold blue]zak quickstart[/bold blue]",
+        border_style="blue",
+    ))
+
+    # Step 1: Set up in-memory graph with sample data
+    console.print("\n[bold cyan]Step 1:[/bold cyan] Populating in-memory SIF graph with sample data...")
+    adapter = InMemoryGraphAdapter()
+    adapter.initialize_schema(tenant_id)
+
+    sample_assets = [
+        AssetNode(
+            node_id="web-server-prod",
+            asset_type="server",
+            criticality="critical",
+            environment="production",
+            exposure_level="internet_facing",
+            owner="platform-team",
+            source="quickstart-demo",
+        ),
+        AssetNode(
+            node_id="internal-api",
+            asset_type="application",
+            criticality="high",
+            environment="production",
+            exposure_level="internal",
+            owner="backend-team",
+            source="quickstart-demo",
+        ),
+    ]
+    sample_vulns = [
+        VulnerabilityNode(
+            node_id="CVE-2024-1234",
+            vuln_type="cve",
+            cve_id="CVE-2024-1234",
+            severity="critical",
+            exploitability=0.9,
+            cvss_score=9.8,
+            source="quickstart-demo",
+        ),
+        VulnerabilityNode(
+            node_id="MISCONFIG-001",
+            vuln_type="misconfiguration",
+            severity="medium",
+            exploitability=0.4,
+            source="quickstart-demo",
+        ),
+    ]
+    sample_controls = [
+        ControlNode(
+            node_id="waf-cloudflare",
+            control_type="waf",
+            effectiveness=0.7,
+            automated=True,
+            source="quickstart-demo",
+        ),
+    ]
+
+    for node in sample_assets + sample_vulns + sample_controls:
+        adapter.upsert_node(tenant_id, node)
+
+    # Create edges
+    adapter.upsert_edge(
+        tenant_id, "web-server-prod", "Asset",
+        "CVE-2024-1234", "Vulnerability", "AssetHasVulnerability",
+    )
+    adapter.upsert_edge(
+        tenant_id, "internal-api", "Asset",
+        "MISCONFIG-001", "Vulnerability", "AssetHasVulnerability",
+    )
+    adapter.upsert_edge(
+        tenant_id, "web-server-prod", "Asset",
+        "waf-cloudflare", "Control", "ProtectedBy",
+    )
+
+    console.print("  [green]2 assets, 2 vulnerabilities, 1 control loaded[/green]")
+
+    # Step 2: Register tenant
+    console.print("\n[bold cyan]Step 2:[/bold cyan] Registering demo tenant...")
+    registry = TenantRegistry()
+    if not registry.exists(tenant_id):
+        registry.register(tenant_id=tenant_id, name="Demo Tenant")
+    console.print(f"  [green]Tenant '{tenant_id}' registered[/green]")
+
+    # Step 3: Build agent YAML inline (deterministic risk_quant)
+    console.print("\n[bold cyan]Step 3:[/bold cyan] Loading risk_quant agent (deterministic mode)...")
+
+    import tempfile
+    agent_yaml = """\
+agent:
+  id: quickstart-risk-agent
+  name: "Quickstart Risk Agent"
+  domain: risk_quant
+  version: "1.0.0"
+
+intent:
+  goal: "Compute risk scores for all assets"
+  success_criteria:
+    - "All assets scored"
+  priority: high
+
+reasoning:
+  mode: deterministic
+  autonomy_level: bounded
+  confidence_threshold: 0.85
+
+capabilities:
+  tools:
+    - list_assets
+    - list_vulnerabilities
+    - list_controls
+    - compute_risk
+    - write_risk_node
+  data_access:
+    - sif_graph
+
+boundaries:
+  risk_budget: low
+  allowed_actions:
+    - agent_execute
+    - list_assets
+    - list_vulnerabilities
+    - list_controls
+    - compute_risk
+    - write_risk_node
+  denied_actions:
+    - delete_node
+  environment_scope:
+    - production
+    - staging
+
+safety:
+  guardrails:
+    - no_destructive_actions
+  sandbox_profile: standard
+  audit_level: standard
+"""
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
+        f.write(agent_yaml)
+        yaml_path = f.name
+
+    dsl = load_agent_yaml(yaml_path)
+    console.print(f"  [green]Agent '{dsl.agent.name}' loaded[/green]")
+
+    # Step 4: Run the agent
+    console.print("\n[bold cyan]Step 4:[/bold cyan] Running risk quantification...")
+
+    _load_all_agents()
+
+    from zak.agents.risk_quant.agent import RiskQuantAgent
+    agent = RiskQuantAgent(adapter=adapter)
+
+    context = AgentContext(
+        tenant_id=tenant_id,
+        trace_id=trace_id,
+        dsl=dsl,
+        environment="staging",
+    )
+
+    executor = AgentExecutor()
+    result_obj = executor.run(agent, context)
+
+    # Step 5: Display results
+    if result_obj.success:
+        console.print(f"\n[bold green]Agent completed in {result_obj.duration_ms:.1f}ms[/bold green]\n")
+
+        output = result_obj.output
+        results_table = Table(title="Risk Scores", border_style="green")
+        results_table.add_column("Asset ID", style="cyan")
+        results_table.add_column("Risk Score", style="bold")
+        results_table.add_column("Risk Level", style="bold")
+
+        for r in output.get("results", []):
+            level = r.get("risk_level", "unknown")
+            color = {"critical": "red", "high": "yellow", "medium": "blue", "low": "green"}.get(
+                level, "white"
+            )
+            results_table.add_row(
+                r["asset_id"],
+                f"{r['risk_score']:.2f}",
+                f"[{color}]{level}[/{color}]",
+            )
+        console.print(results_table)
+
+        console.print(Panel(
+            f"[bold]Assets scored:[/bold] {output.get('assets_scored', 0)}\n"
+            f"[bold]Trace ID:[/bold] {trace_id}\n\n"
+            "[bold]Next steps:[/bold]\n"
+            "  1. [white]zak init --name 'My Agent' --domain risk_quant[/white]  — scaffold your own agent\n"
+            "  2. [white]zak run my-agent.yaml --tenant acme[/white]             — run with real data\n"
+            "  3. Add [cyan]reasoning.mode: llm_react[/cyan] + LLM config for AI-powered analysis",
+            title="[bold green]Quickstart Complete[/bold green]",
+            border_style="green",
+        ))
+    else:
+        console.print("\n[bold red]Agent failed[/bold red]")
+        for err in result_obj.errors:
+            console.print(f"  [red]{err}[/red]")
+        sys.exit(1)
+
+    # Cleanup
+    import os
+    os.unlink(yaml_path)
+
+
 @cli.command(name="init")
 @click.option("--name", "-n", required=True, help="Human-readable agent name (e.g. 'My Risk Agent')")
 @click.option(
@@ -224,7 +448,24 @@ def run(path: str, tenant: str, env: str, meta: list[str]) -> None:
         sys.exit(0)
 
     try:
-        agent_cls = registry_instance.resolve(domain)
+        # When multiple agents share a domain, disambiguate by matching
+        # the YAML file's parent package against the agent's module path.
+        all_regs = registry_instance.resolve_all(domain)
+        if len(all_regs) > 1:
+            yaml_parent = str(yaml_path_obj.parent)
+            agent_cls = None
+            for reg in all_regs:
+                # Convert module path (zak.agents.slopsquatting.agent) to
+                # filesystem segments and check if the YAML sits in that package.
+                mod_parts = reg.module.rsplit(".", 1)[0]  # drop '.agent'
+                mod_dir = mod_parts.replace(".", "/")
+                if yaml_parent.endswith(mod_dir):
+                    agent_cls = reg.agent_class
+                    break
+            if agent_cls is None:
+                agent_cls = registry_instance.resolve(domain)
+        else:
+            agent_cls = registry_instance.resolve(domain)
     except EditionError as exc:
         console.print(Panel(
             f"[bold red]{exc}[/bold red]\n\n"
@@ -239,8 +480,8 @@ def run(path: str, tenant: str, env: str, meta: list[str]) -> None:
     import inspect
     sig = inspect.signature(agent_cls.__init__)
     if "adapter" in sig.parameters:
-        from zak.sif.graph.adapter import KuzuAdapter
-        adapter = KuzuAdapter()
+        from zak.sif.graph.factory import create_adapter
+        adapter = create_adapter()
         adapter.initialize_schema(tenant)
         agent = agent_cls(adapter)
     else:
@@ -291,7 +532,9 @@ def info() -> None:
     table.add_row("Edition", edition_label)
     table.add_row("Agents Available", str(len(reg.all_domains())))
     table.add_row("Registered Domains", ", ".join(reg.all_domains()) or "none")
-    table.add_row("Graph Backend", "Kuzu (embedded) → Memgraph (production)")
+    import os
+    graph_backend = os.getenv("ZAK_GRAPH_BACKEND", "memory")
+    table.add_row("Graph Backend", f"{graph_backend} (set ZAK_GRAPH_BACKEND=memory|memgraph)")
     table.add_row("Multi-tenant", "✅ Namespace isolation")
     table.add_row("Audit", "✅ Structured JSON (structlog)")
     if current_edition != Edition.ENTERPRISE:

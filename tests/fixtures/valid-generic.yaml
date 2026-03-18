@@ -1,0 +1,44 @@
+agent:
+  id: test-generic-v1
+  name: Test Generic Agent
+  domain: appsec
+  version: "1.0.0"
+
+intent:
+  goal: Perform a basic application security scan
+  success_criteria:
+    - Identify OWASP Top 10 vulnerabilities
+    - Generate a findings report
+  priority: medium
+
+reasoning:
+  mode: deterministic
+  autonomy_level: bounded
+  confidence_threshold: 0.75
+
+capabilities:
+  tools:
+    - read_asset
+    - list_assets
+  data_access:
+    - asset_inventory
+  graph_access:
+    - Asset
+    - Vulnerability
+
+boundaries:
+  risk_budget: medium
+  allowed_actions:
+    - read_asset
+    - list_assets
+  denied_actions: []
+  environment_scope:
+    - staging
+    - dev
+  approval_gates: []
+
+safety:
+  guardrails:
+    - no_data_exfiltration
+  sandbox_profile: standard
+  audit_level: standard

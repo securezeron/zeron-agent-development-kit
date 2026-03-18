@@ -1,0 +1,98 @@
+{
+  "name": "zin-adk",
+  "version": "0.1.4",
+  "description": "ZAK — Zeron Agentic Kit, open-source ADK for building autonomous cybersecurity agents. Build, deploy, and govern autonomous cybersecurity agents.",
+  "type": "module",
+  "main": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
+  "bin": {
+    "zak": "./dist/bin/zak.js"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/src/index.js",
+      "types": "./dist/src/index.d.ts"
+    },
+    "./cli": {
+      "import": "./dist/src/cli/main.js",
+      "types": "./dist/src/cli/main.d.ts"
+    }
+  },
+  "files": [
+    "dist/",
+    "LICENSE",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist/",
+    "dev": "tsx watch src/index.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "tsc --noEmit",
+    "cli": "tsx bin/zak.ts",
+    "prepublishOnly": "npm run clean && npm run build && npm run test",
+    "prepack": "npm run build"
+  },
+  "keywords": [
+    "cybersecurity",
+    "security-agents",
+    "ai-agents",
+    "autonomous-agents",
+    "risk-quantification",
+    "devsecops",
+    "soc-automation",
+    "vulnerability-management",
+    "compliance-automation",
+    "security-intelligence",
+    "adk",
+    "agent-development-kit",
+    "zak",
+    "dsl"
+  ],
+  "license": "Apache-2.0",
+  "author": {
+    "name": "zeron.one",
+    "email": "info@zeron.one",
+    "url": "https://zeron.one"
+  },
+  "homepage": "https://zeron.one",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/securezeron/zeron-agent-development-kit",
+    "directory": "adk/node"
+  },
+  "bugs": {
+    "url": "https://github.com/securezeron/zeron-agent-development-kit/issues"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "dependencies": {
+    "zod": "^3.23.0",
+    "js-yaml": "^4.1.0",
+    "pino": "^9.0.0",
+    "commander": "^12.0.0",
+    "chalk": "^5.3.0",
+    "ulid": "^2.3.0"
+  },
+  "optionalDependencies": {
+    "neo4j-driver": "^5.0.0",
+    "openai": "^4.60.0",
+    "@anthropic-ai/sdk": "^0.32.0",
+    "@google/generative-ai": "^0.21.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0",
+    "vitest": "^2.0.0",
+    "tsx": "^4.0.0",
+    "@types/js-yaml": "^4.0.0",
+    "@types/node": "^22.0.0"
+  }
+}

@@ -1,0 +1,55 @@
+agent:
+  id: slopsquatting-detector-v1
+  name: "Slopsquatting Detector"
+  domain: supply_chain
+  version: "1.0.0"
+
+intent:
+  goal: "Detect phantom/hallucinated package imports in AI-generated code"
+  success_criteria:
+    - "All imports extracted and verified against package registries"
+    - "Phantom packages identified and flagged with risk assessment"
+  priority: high
+
+reasoning:
+  mode: llm_react
+  autonomy_level: bounded
+  confidence_threshold: 0.80
+  llm:
+    provider: openai
+    model: gpt-4o
+    temperature: 0.1
+    max_iterations: 15
+
+capabilities:
+  tools:
+    - read_local_code_file
+    - extract_imports
+    - check_pypi_package
+    - check_npm_package
+  data_access:
+    - source_code
+    - package_registries
+
+boundaries:
+  risk_budget: low
+  allowed_actions:
+    - read_local_code_file
+    - extract_imports
+    - check_pypi_package
+    - check_npm_package
+    - agent_execute
+    - llm_request
+  denied_actions:
+    - modify_source_code
+    - install_package
+  environment_scope:
+    - local
+    - staging
+    - ci_cd
+
+safety:
+  guardrails:
+    - no_destructive_actions
+  sandbox_profile: strict
+  audit_level: standard

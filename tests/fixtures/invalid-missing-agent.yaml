@@ -1,0 +1,8 @@
+# Missing the required 'agent' section entirely
+intent:
+  goal: Do something
+  priority: medium
+
+reasoning:
+  mode: deterministic
+  autonomy_level: bounded

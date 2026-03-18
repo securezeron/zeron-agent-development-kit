@@ -1,0 +1,27 @@
+# Source (TypeScript) — consumers use compiled dist/
+src/
+bin/
+tests/
+
+# Config files
+tsconfig.json
+vitest.config.ts
+.eslintrc*
+.prettierrc*
+
+# Dev / CI
+.github/
+.vscode/
+node_modules/
+coverage/
+*.tsbuildinfo
+
+# Lock files (consumers install their own)
+pnpm-lock.yaml
+yarn.lock
+package-lock.json
+
+# Misc
+*.log
+.DS_Store
+.env*

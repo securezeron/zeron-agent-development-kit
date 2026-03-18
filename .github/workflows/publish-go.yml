@@ -1,0 +1,45 @@
+name: Publish Go
+
+# Triggers on Go ADK version tags like adk/go/v0.1.4
+on:
+  push:
+    tags:
+      - "adk/go/v*"
+
+jobs:
+  publish:
+    name: Publish to pkg.go.dev
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: adk/go
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.23"
+
+      - name: Verify module
+        run: go mod verify
+
+      - name: Lint
+        run: go vet ./...
+
+      - name: Test
+        run: go test -v -race -count=1 ./...
+
+      - name: Build CLI
+        run: go build -o ./bin/zak ./cmd/zak/
+
+      # pkg.go.dev indexes automatically when a tag is pushed.
+      # This step explicitly requests indexing to speed it up.
+      - name: Request pkg.go.dev indexing
+        run: |
+          TAG=${GITHUB_REF#refs/tags/adk/go/}
+          MODULE="github.com/securezeron/zeron-agent-development-kit/adk/go"
+          echo "Requesting indexing for ${MODULE}@${TAG}"
+          GOPROXY=https://proxy.golang.org GO111MODULE=on \
+            go list -m "${MODULE}@${TAG}" || true
+          echo "Module will be available at:"
+          echo "  https://pkg.go.dev/${MODULE}@${TAG}"

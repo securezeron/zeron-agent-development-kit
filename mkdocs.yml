@@ -33,7 +33,8 @@ theme:
 nav:
   - Home: index.md
   - Getting Started:
-    - Quickstart: 01_quickstart.md
+    - Quickstart (Python): 01_quickstart.md
+    - Quickstart (Node.js / Go): 09_node_go_quickstart.md
     - Core Concepts: 02_concepts.md
   - Building Agents:
     - Guide: 03_building_agents.md

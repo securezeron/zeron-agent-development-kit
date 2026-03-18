@@ -1,0 +1,28 @@
+# Red team agent with wrong sandbox — should fail validation
+agent:
+  id: bad-red-team-v1
+  name: Bad Red Team Agent
+  domain: red_team
+  version: "1.0.0"
+
+intent:
+  goal: Attempt recon
+  priority: critical
+
+reasoning:
+  mode: llm_react
+  autonomy_level: bounded
+  confidence_threshold: 0.9
+  llm:
+    provider: openai
+    model: gpt-4o
+
+capabilities:
+  tools: []
+
+boundaries:
+  risk_budget: high
+
+safety:
+  sandbox_profile: standard
+  audit_level: standard
