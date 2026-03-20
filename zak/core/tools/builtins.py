@@ -42,7 +42,7 @@ def _get_adapter() -> Any:
 def read_asset(context: AgentContext, asset_id: str) -> Optional[dict[str, Any]]:
     """Read a single asset node from the SIF graph."""
     adapter = _get_adapter()
-    return adapter.get_node(tenant_id=context.tenant_id, node_type="asset", node_id=asset_id)
+    return adapter.get_node(tenant_id=context.tenant_id, node_type="asset", node_id=asset_id)  # type: ignore[no-any-return]
 
 
 @zak_tool(
@@ -54,7 +54,7 @@ def read_asset(context: AgentContext, asset_id: str) -> Optional[dict[str, Any]]
 def list_assets(context: AgentContext) -> list[dict[str, Any]]:
     """List all assets for the current tenant."""
     adapter = _get_adapter()
-    return adapter.get_nodes(tenant_id=context.tenant_id, node_type="asset")
+    return adapter.get_nodes(tenant_id=context.tenant_id, node_type="asset")  # type: ignore[no-any-return]
 
 
 @zak_tool(
@@ -66,7 +66,7 @@ def list_assets(context: AgentContext) -> list[dict[str, Any]]:
 def list_vulnerabilities(context: AgentContext) -> list[dict[str, Any]]:
     """List all vulnerability nodes for the current tenant."""
     adapter = _get_adapter()
-    return adapter.get_nodes(tenant_id=context.tenant_id, node_type="vulnerability")
+    return adapter.get_nodes(tenant_id=context.tenant_id, node_type="vulnerability")  # type: ignore[no-any-return]
 
 
 @zak_tool(
@@ -78,7 +78,7 @@ def list_vulnerabilities(context: AgentContext) -> list[dict[str, Any]]:
 def list_vendors(context: AgentContext) -> list[dict[str, Any]]:
     """List all vendor nodes for the current tenant."""
     adapter = _get_adapter()
-    return adapter.get_nodes(tenant_id=context.tenant_id, node_type="vendor")
+    return adapter.get_nodes(tenant_id=context.tenant_id, node_type="vendor")  # type: ignore[no-any-return]
 
 
 @zak_tool(
@@ -90,7 +90,7 @@ def list_vendors(context: AgentContext) -> list[dict[str, Any]]:
 def list_controls(context: AgentContext) -> list[dict[str, Any]]:
     """List all security control nodes for the current tenant."""
     adapter = _get_adapter()
-    return adapter.get_nodes(tenant_id=context.tenant_id, node_type="control")
+    return adapter.get_nodes(tenant_id=context.tenant_id, node_type="control")  # type: ignore[no-any-return]
 
 
 @zak_tool(
@@ -102,7 +102,7 @@ def list_controls(context: AgentContext) -> list[dict[str, Any]]:
 def list_identities(context: AgentContext) -> list[dict[str, Any]]:
     """List all identity nodes for the current tenant."""
     adapter = _get_adapter()
-    return adapter.get_nodes(tenant_id=context.tenant_id, node_type="identity")
+    return adapter.get_nodes(tenant_id=context.tenant_id, node_type="identity")  # type: ignore[no-any-return]
 
 
 @zak_tool(
@@ -114,7 +114,7 @@ def list_identities(context: AgentContext) -> list[dict[str, Any]]:
 def list_risks(context: AgentContext) -> list[dict[str, Any]]:
     """List all risk nodes for the current tenant."""
     adapter = _get_adapter()
-    return adapter.get_nodes(tenant_id=context.tenant_id, node_type="risk")
+    return adapter.get_nodes(tenant_id=context.tenant_id, node_type="risk")  # type: ignore[no-any-return]
 
 
 @zak_tool(
@@ -126,7 +126,7 @@ def list_risks(context: AgentContext) -> list[dict[str, Any]]:
 def list_ai_models(context: AgentContext) -> list[dict[str, Any]]:
     """List all AI model nodes for the current tenant."""
     adapter = _get_adapter()
-    return adapter.get_nodes(tenant_id=context.tenant_id, node_type="ai_model")
+    return adapter.get_nodes(tenant_id=context.tenant_id, node_type="ai_model")  # type: ignore[no-any-return]
 
 
 # ---------------------------------------------------------------------------

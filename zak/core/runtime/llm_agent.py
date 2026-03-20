@@ -249,9 +249,9 @@ class LLMAgent(BaseAgent, abc.ABC):
                 tool_fn = self._resolve_tool(tool_call.name)
                 if tool_fn is None:
                     available = [
-                        getattr(t, "_zak_tool", None).action_id
+                        meta.action_id
                         for t in self.tools
-                        if getattr(t, "_zak_tool", None)
+                        if (meta := getattr(t, "_zak_tool", None))
                     ]
                     err = {
                         "error": (
@@ -514,9 +514,9 @@ class LLMAgent(BaseAgent, abc.ABC):
                 tool_fn = self._resolve_tool(tool_call.name)
                 if tool_fn is None:
                     available = [
-                        getattr(t, "_zak_tool", None).action_id
+                        meta.action_id
                         for t in self.tools
-                        if getattr(t, "_zak_tool", None)
+                        if (meta := getattr(t, "_zak_tool", None))
                     ]
                     err = {
                         "error": (

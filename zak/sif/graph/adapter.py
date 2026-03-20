@@ -30,9 +30,9 @@ import os
 from typing import Any, Optional
 
 try:
-    from neo4j import GraphDatabase as _Neo4jGD  # type: ignore[import-untyped]
+    from neo4j import GraphDatabase as _Neo4jGD
 except ImportError:
-    _Neo4jGD = None  # type: ignore[assignment]
+    _Neo4jGD = None
 
 from zak.sif.schema.nodes import (
     AIModelNode,

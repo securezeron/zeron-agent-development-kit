@@ -182,7 +182,7 @@ def _github_api_request(
         req.add_header("Content-Type", "application/json")
     ctx = ssl.create_default_context()
     with urllib.request.urlopen(req, context=ctx) as resp:
-        return json.loads(resp.read().decode("utf-8"))
+        return json.loads(resp.read().decode("utf-8"))  # type: ignore[no-any-return]
 
 
 # ---------------------------------------------------------------------------

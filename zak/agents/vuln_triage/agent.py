@@ -18,6 +18,8 @@ Supports two execution modes:
 
 from __future__ import annotations
 
+from typing import Any
+
 from zak.core.dsl.schema import ReasoningMode
 from zak.core.runtime.agent import AgentContext, AgentResult, BaseAgent
 from zak.core.runtime.llm_agent import LLMAgent
@@ -58,16 +60,16 @@ class VulnTriageAgent(BaseAgent):
     def _execute_deterministic(self, context: AgentContext) -> AgentResult:
         tenant_id = context.tenant_id
         vulns = (
-            self._adapter.get_nodes(tenant_id=tenant_id, node_type="vulnerability")  # type: ignore[union-attr]
+            self._adapter.get_nodes(tenant_id=tenant_id, node_type="vulnerability")  # type: ignore[attr-defined]
             if self._adapter is not None else []
         )
         assets = (
-            self._adapter.get_nodes(tenant_id=tenant_id, node_type="asset")  # type: ignore[union-attr]
+            self._adapter.get_nodes(tenant_id=tenant_id, node_type="asset")  # type: ignore[attr-defined]
             if self._adapter is not None else []
         )
 
         asset_crit = {a["node_id"]: a.get("criticality", "medium") for a in assets}
-        triaged: list[dict] = []
+        triaged: list[dict[str, Any]] = []
 
         for vuln in vulns:
             severity = vuln.get("severity", "medium").lower()
@@ -119,7 +121,7 @@ class _LLMVulnTriageAgent(LLMAgent):
     """
 
     @property
-    def tools(self) -> list:
+    def tools(self) -> list[Any]:
         from zak.core.tools.builtins import (
             list_vulnerabilities,
             list_assets,

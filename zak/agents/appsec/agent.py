@@ -51,15 +51,15 @@ class AppSecAgent(BaseAgent):
     def _execute_deterministic(self, context: AgentContext) -> AgentResult:
         tenant_id = context.tenant_id
         repos = (
-            self._adapter.get_nodes(tenant_id=tenant_id, node_type="repository")  # type: ignore[union-attr]
+            self._adapter.get_nodes(tenant_id=tenant_id, node_type="repository")  # type: ignore[attr-defined]
             if self._adapter is not None else []
         )
         deps = (
-            self._adapter.get_nodes(tenant_id=tenant_id, node_type="dependency")  # type: ignore[union-attr]
+            self._adapter.get_nodes(tenant_id=tenant_id, node_type="dependency")  # type: ignore[attr-defined]
             if self._adapter is not None else []
         )
 
-        findings: list[dict] = []
+        findings: list[dict[str, object]] = []
         secrets_found = 0
 
         for repo in repos:
@@ -100,7 +100,7 @@ class _LLMAppSecAgent(LLMAgent):
     """LLM-powered application security analysis using the ReAct loop."""
 
     @property
-    def tools(self) -> list:
+    def tools(self) -> list[object]:
         from zak.core.tools.builtins import (
             list_assets,
             list_vulnerabilities,

@@ -23,6 +23,7 @@ import copy
 import json
 import os
 from datetime import datetime, timezone
+from typing import Any
 
 from zak.core.dsl.schema import ReasoningMode
 from zak.core.runtime.agent import AgentContext, AgentResult, BaseAgent
@@ -88,7 +89,7 @@ class DepPatchAgent(BaseAgent):
         non_updatable_deps = [d for d in deps if not d["is_updatable"]]
 
         # 3. Check registry for updates
-        results: list[dict] = []
+        results: list[dict[str, Any]] = []
 
         # Non-updatable: pass through with empty versions
         for dep in non_updatable_deps:
@@ -131,7 +132,7 @@ class DepPatchAgent(BaseAgent):
         ]
 
         # 5. Risk assessment
-        assessed_updates: list[dict] = []
+        assessed_updates: list[dict[str, Any]] = []
         if updatable_results:
             assessed_updates = ToolExecutor.call(
                 assess_update_risks, context=context, updates=updatable_results,
@@ -143,7 +144,7 @@ class DepPatchAgent(BaseAgent):
                     results[i] = assessed_by_name[r["name"]]
 
         # 6. Build summary
-        summary: dict = {
+        summary: dict[str, Any] = {
             "total_dependencies": len(deps),
             "updatable": len([
                 r for r in results
@@ -267,7 +268,7 @@ class _LLMDepPatchAgent:
         tools_schema = _build_openai_schema(available_tools)
 
         # LLM config from DSL
-        llm_cfg: dict = {}
+        llm_cfg: dict[str, Any] = {}
         if context.dsl.reasoning.llm:
             llm_block = context.dsl.reasoning.llm
             llm_cfg = (
@@ -309,7 +310,7 @@ class _LLMDepPatchAgent:
             "Ground every decision in tool output. Do not invent version numbers."
         )
 
-        messages: list[dict] = [
+        messages: list[dict[str, Any]] = [
             {"role": "system", "content": system},
             {
                 "role": "user",
@@ -320,12 +321,12 @@ class _LLMDepPatchAgent:
             },
         ]
 
-        reasoning_trace: list[dict] = []
-        total_usage: dict = {
+        reasoning_trace: list[dict[str, Any]] = []
+        total_usage: dict[str, Any] = {
             "prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0,
         }
 
-        def resolve(name: str):  # type: ignore[return]
+        def resolve(name: str) -> Any:
             for fn in available_tools:
                 meta = getattr(fn, "_zak_tool", None)
                 if meta and meta.action_id == name:
@@ -362,9 +363,9 @@ class _LLMDepPatchAgent:
                 )
 
             # Process tool calls
-            tool_results: list[dict] = []
+            tool_results: list[dict[str, Any]] = []
             for tc in response.tool_calls:
-                entry: dict = {
+                entry: dict[str, Any] = {
                     "iteration": iteration + 1,
                     "type": "tool_call",
                     "tool": tc.name,

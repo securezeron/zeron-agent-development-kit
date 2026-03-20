@@ -93,7 +93,7 @@ def spawn_agent(
     except Exception as exc:
         return {"domain": domain, "error": str(exc)}
 
-    sig = inspect.signature(agent_cls.__init__)
+    sig = inspect.signature(agent_cls.__init__)  # type: ignore[misc]
     if "adapter" in sig.parameters:
         try:
             from zak.sif.graph.adapter import KuzuAdapter

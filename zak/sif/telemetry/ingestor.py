@@ -76,7 +76,10 @@ class TelemetryIngestor:
             environment=event.get("environment", "production"),
             owner=event.get("owner"),
             exposure_level=event.get("exposure_level", "internal"),
+            risk_score=_safe_float(event.get("risk_score", 0.0), 0.0),
             source=event.get("source", "telemetry"),
+            valid_to=None,
+            confidence=0.95,
         )
         self._adapter.upsert_node(tenant_id, node)
 
@@ -91,6 +94,8 @@ class TelemetryIngestor:
             exploitability=_safe_float(event.get("exploitability", 0.5), 0.5),
             cvss_score=event.get("cvss_score"),
             source=event.get("source", "telemetry"),
+            valid_to=None,
+            confidence=0.95,
         )
         self._adapter.upsert_node(tenant_id, vuln)
 
@@ -115,6 +120,8 @@ class TelemetryIngestor:
             effectiveness=_safe_float(event.get("effectiveness", 0.5), 0.5),
             automated=event.get("automated", True),
             source=event.get("source", "telemetry"),
+            valid_to=None,
+            confidence=0.95,
         )
         self._adapter.upsert_node(tenant_id, node)
 
@@ -128,5 +135,7 @@ class TelemetryIngestor:
             risk_score=_safe_float(event.get("risk_score", 0.0), 0.0),
             last_assessed=datetime.now(timezone.utc),
             source=event.get("source", "telemetry"),
+            valid_to=None,
+            confidence=0.95,
         )
         self._adapter.upsert_node(tenant_id, node)

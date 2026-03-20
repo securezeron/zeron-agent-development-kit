@@ -7,9 +7,9 @@ file-saving utilities to the ISO27001SOC2Agent's LLM ReAct loop.
 
 from __future__ import annotations
 
-import json
 import os
 from datetime import date
+from typing import Any
 from zak.core.runtime.agent import AgentContext
 from zak.core.tools.substrate import zak_tool
 
@@ -18,7 +18,7 @@ from zak.core.tools.substrate import zak_tool
 # ISO 27001:2022 — 93 controls across 4 themes
 # ---------------------------------------------------------------------------
 
-ISO27001_CONTROLS: list[dict] = [
+ISO27001_CONTROLS: list[dict[str, Any]] = [
     # Theme 1: Organisational Controls (A.5)
     {
         "theme": "Organisational Controls",
@@ -147,7 +147,7 @@ ISO27001_CONTROLS: list[dict] = [
 # SOC 2 Trust Service Criteria (2017 + 2022 updates)
 # ---------------------------------------------------------------------------
 
-SOC2_CRITERIA: list[dict] = [
+SOC2_CRITERIA: list[dict[str, Any]] = [
     {
         "category": "Common Criteria (CC) — Security",
         "id": "CC",
@@ -270,7 +270,7 @@ SOC2_CRITERIA: list[dict] = [
     action_id="get_iso27001_controls",
     tags=["compliance", "iso27001", "read"],
 )
-def get_iso27001_controls(context: AgentContext) -> dict:
+def get_iso27001_controls(context: AgentContext) -> dict[str, Any]:
     """Return all ISO 27001:2022 Annex A controls grouped by theme."""
     total = sum(len(theme["controls"]) for theme in ISO27001_CONTROLS)
     return {
@@ -286,7 +286,7 @@ def get_iso27001_controls(context: AgentContext) -> dict:
     action_id="get_soc2_criteria",
     tags=["compliance", "soc2", "read"],
 )
-def get_soc2_criteria(context: AgentContext) -> dict:
+def get_soc2_criteria(context: AgentContext) -> dict[str, Any]:
     """Return all SOC 2 Trust Service Criteria grouped by category."""
     return {
         "framework": "SOC 2 (AICPA Trust Service Criteria 2017)",
@@ -305,7 +305,7 @@ def save_policy_document(
     policy_name: str,
     policy_content: str,
     framework: str,
-) -> dict:
+) -> dict[str, Any]:
     """
     Saves a draft policy document as a Markdown file.
 
@@ -355,7 +355,7 @@ status: DRAFT — Requires review and approval by {org_name} management
 def save_gap_report(
     context: AgentContext,
     report_content: str,
-) -> dict:
+) -> dict[str, Any]:
     """
     Saves the master compliance gap report as a Markdown file.
 
@@ -397,7 +397,7 @@ classification: CONFIDENTIAL
     action_id="list_output_files",
     tags=["compliance", "read"],
 )
-def list_output_files(context: AgentContext) -> dict:
+def list_output_files(context: AgentContext) -> dict[str, Any]:
     """Lists all files saved to the compliance output directory."""
     out_dir = context.metadata.get("output_dir", "/tmp/zak_compliance_output")
     if not os.path.exists(out_dir):

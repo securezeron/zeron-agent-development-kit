@@ -59,7 +59,7 @@ class ToolRegistry:
     _lock: threading.Lock = threading.Lock()
 
     def __init__(self) -> None:
-        self._tools: dict[str, tuple[ToolMetadata, Callable]] = {}
+        self._tools: dict[str, tuple[ToolMetadata, Callable[..., Any]]] = {}
 
     @classmethod
     def get(cls) -> ToolRegistry:
@@ -69,10 +69,10 @@ class ToolRegistry:
                     cls._instance = cls()
         return cls._instance
 
-    def register(self, metadata: ToolMetadata, fn: Callable) -> None:
+    def register(self, metadata: ToolMetadata, fn: Callable[..., Any]) -> None:
         self._tools[metadata.action_id] = (metadata, fn)
 
-    def get_tool(self, action_id: str) -> tuple[ToolMetadata, Callable] | None:
+    def get_tool(self, action_id: str) -> tuple[ToolMetadata, Callable[..., Any]] | None:
         return self._tools.get(action_id)
 
     def all_tools(self) -> list[ToolMetadata]:
@@ -99,7 +99,7 @@ def zak_tool(
     description: str = "",
     action_id: str | None = None,
     tags: list[str] | None = None,
-) -> Callable:
+) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
     """
     Decorator that registers a function as a ZAK tool.
 
@@ -120,7 +120,7 @@ def zak_tool(
     """
     resolved_action_id = action_id or name.lower().replace(" ", "_")
 
-    def decorator(fn: Callable) -> Callable:
+    def decorator(fn: Callable[..., Any]) -> Callable[..., Any]:
         meta = ToolMetadata(
             name=name,
             description=description or (inspect.getdoc(fn) or "").split("\n")[0],
@@ -158,7 +158,7 @@ class ToolExecutor:
     @classmethod
     def call(
         cls,
-        tool_fn: Callable,
+        tool_fn: Callable[..., Any],
         context: AgentContext,
         **kwargs: Any,
     ) -> Any:

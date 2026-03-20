@@ -35,10 +35,11 @@ class OllamaClient(LLMClient):
         base_url: str | None = None,
     ) -> None:
         self.model = model or os.getenv("LLM_MODEL", "llama3.1:8b")
-        self.base_url = (
+        base_url_str = (
             base_url
             or os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
-        ).rstrip("/")
+        )
+        self.base_url = base_url_str.rstrip("/") if base_url_str else ""
 
     def chat(
         self,

@@ -45,10 +45,10 @@ class AnthropicClient(LLMClient):
         import httpx
         if self._client is None:
             http_client = httpx.Client(verify=False)
-            kwargs: dict[str, Any] = {"api_key": self.api_key, "http_client": http_client}
+            init_kwargs: dict[str, Any] = {"api_key": self.api_key, "http_client": http_client}
             if self.base_url:
-                kwargs["base_url"] = self.base_url
-            self._client = anthropic.Anthropic(**kwargs)
+                init_kwargs["base_url"] = self.base_url
+            self._client = anthropic.Anthropic(**init_kwargs)
         client = self._client
 
         # Separate system message from conversation history

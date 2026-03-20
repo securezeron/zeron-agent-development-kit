@@ -45,10 +45,10 @@ class OpenAIClient(LLMClient):
             ) from exc
 
         if self._client is None:
-            kwargs: dict[str, Any] = {"api_key": self.api_key}
+            init_kwargs: dict[str, Any] = {"api_key": self.api_key}
             if self.base_url:
-                kwargs["base_url"] = self.base_url
-            self._client = openai.OpenAI(**kwargs)
+                init_kwargs["base_url"] = self.base_url
+            self._client = openai.OpenAI(**init_kwargs)
         client = self._client
 
         kwargs: dict[str, Any] = dict(

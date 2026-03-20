@@ -25,6 +25,7 @@ from zak.core.dsl.parser import load_agent_yaml, validate_agent
 from zak.core.edition import Edition, EditionError, get_edition
 
 from zak.agents import load_all_agents as _load_all_agents
+from zak.sif.schema.nodes import Criticality, Environment, ExposureLevel, Severity
 
 console = Console()
 
@@ -71,20 +72,26 @@ def quickstart(with_llm: bool) -> None:
         AssetNode(
             node_id="web-server-prod",
             asset_type="server",
-            criticality="critical",
-            environment="production",
-            exposure_level="internet_facing",
+            criticality=Criticality.CRITICAL,
+            environment=Environment.PRODUCTION,
+            exposure_level=ExposureLevel.INTERNET_FACING,
             owner="platform-team",
             source="quickstart-demo",
+            valid_to=None,
+            confidence=1.0,
+            risk_score=0.0,
         ),
         AssetNode(
             node_id="internal-api",
             asset_type="application",
-            criticality="high",
-            environment="production",
-            exposure_level="internal",
+            criticality=Criticality.HIGH,
+            environment=Environment.PRODUCTION,
+            exposure_level=ExposureLevel.INTERNAL,
             owner="backend-team",
             source="quickstart-demo",
+            valid_to=None,
+            confidence=1.0,
+            risk_score=0.0,
         ),
     ]
     sample_vulns = [
@@ -92,17 +99,22 @@ def quickstart(with_llm: bool) -> None:
             node_id="CVE-2024-1234",
             vuln_type="cve",
             cve_id="CVE-2024-1234",
-            severity="critical",
+            severity=Severity.CRITICAL,
             exploitability=0.9,
             cvss_score=9.8,
             source="quickstart-demo",
+            valid_to=None,
+            confidence=1.0,
         ),
         VulnerabilityNode(
             node_id="MISCONFIG-001",
             vuln_type="misconfiguration",
-            severity="medium",
+            severity=Severity.MEDIUM,
             exploitability=0.4,
+            cvss_score=None,
             source="quickstart-demo",
+            valid_to=None,
+            confidence=1.0,
         ),
     ]
     sample_controls = [
@@ -112,6 +124,8 @@ def quickstart(with_llm: bool) -> None:
             effectiveness=0.7,
             automated=True,
             source="quickstart-demo",
+            valid_to=None,
+            confidence=1.0,
         ),
     ]
 
@@ -478,7 +492,7 @@ def run(path: str, tenant: str, env: str, meta: list[str]) -> None:
 
     # Inject graph adapter for agents that need it (check constructor signature)
     import inspect
-    sig = inspect.signature(agent_cls.__init__)
+    sig = inspect.signature(agent_cls.__init__)  # type: ignore[misc]
     if "adapter" in sig.parameters:
         from zak.sif.graph.factory import create_adapter
         adapter = create_adapter()

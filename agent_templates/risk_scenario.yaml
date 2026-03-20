@@ -1,0 +1,55 @@
+agent:
+  id: risk-scenario-generator-v1
+  name: "Risk Scenario Generator Agent"
+  domain: risk_scenario
+  version: "1.0.0"
+
+intent:
+  goal: "Generate calibrated CRML cyber risk scenarios for a target domain by gathering domain intelligence, identifying industry/threat profile, and producing schema-valid scenario YAML documents"
+  success_criteria:
+    - "At least 3 CRML scenarios generated"
+    - "All scenarios pass CRML schema validation"
+    - "Frequency and severity parameters are calibrated to industry/company size"
+    - "Each scenario includes relevant controls with effectiveness ratings"
+  priority: high
+
+reasoning:
+  mode: llm_react
+  autonomy_level: bounded
+  confidence_threshold: 0.75
+  llm:
+    provider: openai
+    model: gpt-4o
+    temperature: 0.3
+    max_iterations: 15
+    max_tokens: 8192
+
+capabilities:
+  tools:
+    - fetch_domain_intel
+    - generate_crml_scenario
+    - validate_crml_scenario
+  data_access:
+    - web_public
+  graph_access: false
+
+boundaries:
+  risk_budget: low
+  allowed_actions:
+    - agent_execute
+    - fetch_domain_intel
+    - generate_crml_scenario
+    - validate_crml_scenario
+  denied_actions:
+    - write_risk_node
+    - delete_asset
+  environment_scope:
+    - production
+    - staging
+
+safety:
+  guardrails:
+    - no_destructive_actions
+    - require_confidence_threshold
+  sandbox_profile: standard
+  audit_level: standard

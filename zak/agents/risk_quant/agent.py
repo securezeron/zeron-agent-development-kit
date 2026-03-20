@@ -21,6 +21,8 @@ QBER integration point: replace _compute_eal_stub() with PyMC model in Phase 3.
 
 from __future__ import annotations
 
+from typing import Any
+
 from zak.core.dsl.schema import ReasoningMode
 from zak.core.runtime.agent import AgentContext, AgentResult, BaseAgent
 from zak.core.runtime.registry import register_agent
@@ -68,12 +70,12 @@ class RiskQuantAgent(BaseAgent):
 
     def _execute_deterministic(self, context: AgentContext) -> AgentResult:
         tenant_id = context.tenant_id
-        scored: list[dict] = []
+        scored: list[dict[str, Any]] = []
         errors: list[str] = []
 
         # Load all assets for this tenant (graceful when graph is unavailable)
         assets = (
-            self._adapter.get_nodes(tenant_id=tenant_id, node_type="asset")
+            self._adapter.get_nodes(tenant_id=tenant_id, node_type="asset")  # type: ignore[attr-defined]
             if self._adapter is not None else []
         )
 
@@ -88,9 +90,12 @@ class RiskQuantAgent(BaseAgent):
                     risk_score=risk_output.risk_score,
                     eal=self._compute_eal_stub(risk_output.risk_score),
                     source=context.agent_id,
+                    valid_to=None,
+                    confidence=0.95,
+                    var_95=None,
                 )
                 if self._adapter is not None:
-                    self._adapter.upsert_node(tenant_id, risk_node)
+                    self._adapter.upsert_node(tenant_id, risk_node)  # type: ignore[attr-defined]
                 scored.append({
                     "asset_id": asset["node_id"],
                     "risk_score": risk_output.risk_score,
@@ -111,19 +116,19 @@ class RiskQuantAgent(BaseAgent):
             },
         )
 
-    def _score_asset(self, asset: dict, tenant_id: str) -> object:
+    def _score_asset(self, asset: dict[str, Any], tenant_id: str) -> Any:
         """Compute risk for a single asset dict."""
         criticality = asset.get("criticality", "medium")
         exposure = asset.get("exposure_level", "internal")
 
         # Load worst-case vulnerability exploitability for this asset
-        vulns = self._adapter.get_nodes(tenant_id=tenant_id, node_type="vulnerability") if self._adapter is not None else []
+        vulns = self._adapter.get_nodes(tenant_id=tenant_id, node_type="vulnerability") if self._adapter is not None else []  # type: ignore[attr-defined]
         max_exploitability = max(
             (float(v.get("exploitability", 0.5)) for v in vulns), default=0.5
         )
 
         # Load best control effectiveness
-        controls = self._adapter.get_nodes(tenant_id=tenant_id, node_type="control") if self._adapter is not None else []
+        controls = self._adapter.get_nodes(tenant_id=tenant_id, node_type="control") if self._adapter is not None else []  # type: ignore[attr-defined]
         max_control_eff = max(
             (float(c.get("effectiveness", 0.5)) for c in controls), default=0.0
         )
@@ -185,7 +190,7 @@ class _LLMRiskQuantAgent:
         tools_schema = _build_openai_schema(available_tools)
 
         # LLM config from DSL
-        llm_cfg: dict = {}
+        llm_cfg: dict[str, Any] = {}
         if context.dsl.reasoning.llm:
             llm_block = context.dsl.reasoning.llm
             llm_cfg = (
@@ -230,10 +235,10 @@ Ground every risk score in tool output. Do not invent values."""
             },
         ]
 
-        reasoning_trace = []
-        total_usage: dict = {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0}
+        reasoning_trace: list[Any] = []
+        total_usage: dict[str, Any] = {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0}
 
-        def resolve(name: str):
+        def resolve(name: str) -> Any:
             for fn in available_tools:
                 meta = getattr(fn, "_zak_tool", None)
                 if meta and meta.action_id == name:
@@ -300,14 +305,14 @@ Ground every risk score in tool output. Do not invent values."""
 
             messages.append({
                 "role": "assistant",
-                "content": response.content,
+                "content": response.content or "",
                 "tool_calls": [
                     {
                         "id": tc.id, "type": "function",
                         "function": {"name": tc.name, "arguments": json.dumps(tc.arguments)},
                     }
                     for tc in response.tool_calls
-                ],
+                ],  # type: ignore[dict-item]
             })
             messages.extend(tool_results)
 

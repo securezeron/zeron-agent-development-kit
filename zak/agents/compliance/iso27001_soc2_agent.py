@@ -19,6 +19,8 @@ Usage (via zak run):
 
 from __future__ import annotations
 
+from typing import Any
+
 from zak.core.runtime.agent import AgentContext
 from zak.core.runtime.llm_agent import LLMAgent
 from zak.core.runtime.registry import register_agent
@@ -173,7 +175,7 @@ RULES
 """
 
     @property
-    def tools(self) -> list:
+    def tools(self) -> list[Any]:
         return [
             compliance_tools.get_iso27001_controls,
             compliance_tools.get_soc2_criteria,

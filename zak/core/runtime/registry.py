@@ -251,9 +251,9 @@ def register_agent(
             override=override,
         )
         # Attach metadata to the class itself for introspection
-        cls._zak_domain = domain
-        cls._zak_version = version
-        cls._zak_edition = edition
+        cls._zak_domain = domain  # type: ignore[attr-defined]
+        cls._zak_version = version  # type: ignore[attr-defined]
+        cls._zak_edition = edition  # type: ignore[attr-defined]
         return cls
 
     return decorator

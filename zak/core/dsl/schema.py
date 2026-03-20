@@ -24,6 +24,7 @@ class Domain(str, Enum):
     AI_SECURITY     = "ai_security"
     RISK_QUANT      = "risk_quant"
     SUPPLY_CHAIN    = "supply_chain"
+    RISK_SCENARIO   = "risk_scenario"
     COMPLIANCE      = "compliance"
     # Enterprise domains
     API_SECURITY    = "api_security"
@@ -260,9 +261,9 @@ class AgentDSL(BaseModel):
     agent: AgentIdentity
     intent: AgentIntent
     reasoning: ReasoningConfig
-    capabilities: CapabilitiesConfig = Field(default_factory=CapabilitiesConfig)
-    boundaries: BoundariesConfig = Field(default_factory=BoundariesConfig)
-    safety: SafetyConfig = Field(default_factory=SafetyConfig)
+    capabilities: CapabilitiesConfig = Field(default_factory=lambda: CapabilitiesConfig(tools=[], data_access=[], graph_access=[]))
+    boundaries: BoundariesConfig = Field(default_factory=lambda: BoundariesConfig(risk_budget=RiskBudget.MEDIUM, allowed_actions=[], denied_actions=[], environment_scope=[], approval_gates=[]))
+    safety: SafetyConfig = Field(default_factory=lambda: SafetyConfig(guardrails=[], sandbox_profile=SandboxProfile.STANDARD, audit_level=AuditLevel.STANDARD))
 
     @model_validator(mode="after")
     def offensive_agents_require_isolated_sandbox(self) -> AgentDSL:
@@ -285,7 +286,13 @@ class AgentDSL(BaseModel):
             if self.reasoning.llm is None:
                 # Auto-populate with defaults so the field is never missing
                 self.reasoning = self.reasoning.model_copy(
-                    update={"llm": LLMConfig()}
+                    update={"llm": LLMConfig(
+                        provider="openai",
+                        model="gpt-4o",
+                        temperature=0.2,
+                        max_iterations=10,
+                        max_tokens=4096,
+                    )}
                 )
         return self
 
