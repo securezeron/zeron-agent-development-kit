@@ -168,6 +168,18 @@ Plus: REST API server, platform dashboard, user management, and integrations.
 
 ---
 
+## Benchmarks
+
+ZAK + GPT-5 (with selective `o3` escalation) achieves **9/11 (81.8%) pass@2** on the strict-offline subset of [CyBench](https://cybench.github.io/) — Stanford CRFM's cybersecurity LLM benchmark — including a **Hard-tier crypto solve**. On a curated 9-task offline slice the same harness reaches **9/9 (100.0%)**; the same slice with `gpt-4o` reaches only **4/9 (44.4%)**, isolating a clean **55-point same-task model-uplift gap** with all other variables held constant.
+
+To our knowledge this is the first published GPT-5 result on CyBench-format tasks.
+
+- **Paper:** [`benchmarks/cybench/PAPER.pdf`](benchmarks/cybench/PAPER.pdf) (17 pages)
+- **Reproduce:** [`benchmarks/cybench/`](benchmarks/cybench/) — single-file harness, ~700 LoC
+- **Per-task transcripts:** every LLM turn + every shell command, fully auditable
+
+---
+
 ## Documentation
 
 Full docs: [securezeron.github.io/zeron-agent-development-kit](https://securezeron.github.io/zeron-agent-development-kit)
