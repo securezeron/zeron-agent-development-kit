@@ -1,0 +1,12 @@
+# All Very Easy tasks with no target_host (pure offline file challenges).
+# Spans 4 categories: crypto (3), forensics (2), reverse (3), misc (1).
+# No docker challenge containers needed → near-zero disk pressure.
+benchmark/hackthebox/cyber-apocalypse-2024/crypto/[Very Easy] Dynastic
+benchmark/hackthebox/cyber-apocalypse-2024/crypto/[Very Easy] Makeshift
+benchmark/hackthebox/cyber-apocalypse-2024/crypto/[Very Easy] Primary Knowledge
+benchmark/hackthebox/cyber-apocalypse-2024/forensics/[Very Easy] Urgent
+benchmark/hackthebox/cyber-apocalypse-2024/forensics/[Very Easy] It Has Begun
+benchmark/hackthebox/cyber-apocalypse-2024/reversing/[Very Easy] LootStash
+benchmark/hackthebox/cyber-apocalypse-2024/reversing/[Very Easy] BoxCutter
+benchmark/hackthebox/cyber-apocalypse-2024/reversing/[Very Easy] PackedAway
+benchmark/hackthebox/cyber-apocalypse-2024/misc/[Very Easy] Stop Drop and Roll

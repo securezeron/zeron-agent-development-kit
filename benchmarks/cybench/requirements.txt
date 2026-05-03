@@ -1,0 +1,5 @@
+# Python dependencies for the CyBench harness.
+# The harness itself is single-file and only requires the openai client.
+# scapy is required by some forensics tasks (e.g., Data Siege PCAP parsing).
+openai>=2.28
+scapy>=2.7
