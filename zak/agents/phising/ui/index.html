@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DomainShield Agent – Phishing Detection Dashboard</title>
+  <meta name="description" content="AI-powered phishing detection dashboard using strict domain whitelisting. Monitor, classify and block suspicious emails in real-time." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ═══════════════════════ SIDEBAR ═══════════════════════ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">🛡️</div>
+    <div class="logo-text">
+      <span class="logo-title">DomainShield</span>
+      <span class="logo-sub">ZAK Security Agent</span>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <button class="nav-item active" id="nav-inbox" onclick="showView('inbox')">
+      <span class="nav-icon">📥</span><span>Inbox Monitor</span>
+      <span class="nav-badge" id="badge-inbox">0</span>
+    </button>
+    <button class="nav-item" id="nav-blocked" onclick="showView('blocked')">
+      <span class="nav-icon">🚫</span><span>Blocked / Flagged</span>
+      <span class="nav-badge danger" id="badge-blocked">0</span>
+    </button>
+    <button class="nav-item" id="nav-policy" onclick="showView('policy')">
+      <span class="nav-icon">⚙️</span><span>Policy Manager</span>
+    </button>
+    <button class="nav-item" id="nav-logs" onclick="showView('logs')">
+      <span class="nav-icon">📋</span><span>Audit Logs</span>
+    </button>
+    <button class="nav-item" id="nav-analytics" onclick="showView('analytics')">
+      <span class="nav-icon">📊</span><span>Analytics</span>
+    </button>
+  </nav>
+
+  <div class="sidebar-status">
+    <div class="status-dot active"></div>
+    <span>Agent Running</span>
+  </div>
+</aside>
+
+<!-- ═══════════════════════ MAIN ═══════════════════════ -->
+<main class="main">
+
+  <!-- ── TOPBAR ── -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <h1 class="page-title" id="page-title">Inbox Monitor</h1>
+      <span class="page-sub" id="page-sub">Zero-trust email visibility</span>
+    </div>
+    <div class="topbar-right">
+      <button class="btn btn-ghost" id="toggle-blocked-btn" onclick="toggleShowBlocked()">
+        👁 Show Suspicious
+      </button>
+      <button class="btn btn-primary" onclick="runScan()">
+        ⚡ Scan Now
+      </button>
+      <div class="strict-toggle">
+        <span class="strict-label">Strict Mode</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="strict-mode-toggle" checked onchange="toggleStrictMode(this)" />
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── STATS ROW ── -->
+  <section class="stats-row" id="stats-row">
+    <div class="stat-card" id="stat-total">
+      <div class="stat-icon">📨</div>
+      <div class="stat-value" id="stat-total-val">0</div>
+      <div class="stat-label">Total Processed</div>
+    </div>
+    <div class="stat-card safe" id="stat-safe">
+      <div class="stat-icon">✅</div>
+      <div class="stat-value" id="stat-safe-val">0</div>
+      <div class="stat-label">Safe Emails</div>
+    </div>
+    <div class="stat-card warn" id="stat-medium">
+      <div class="stat-icon">⚠️</div>
+      <div class="stat-value" id="stat-medium-val">0</div>
+      <div class="stat-label">Medium Risk</div>
+    </div>
+    <div class="stat-card danger" id="stat-high">
+      <div class="stat-icon">🔴</div>
+      <div class="stat-value" id="stat-high-val">0</div>
+      <div class="stat-label">High Risk / Blocked</div>
+    </div>
+  </section>
+
+  <!-- ═══ VIEW: INBOX ═══ -->
+  <section class="view" id="view-inbox">
+    <div class="inbox-toolbar">
+      <input class="search-box" id="search-box" type="text" placeholder="🔍  Search by sender, subject, domain…" oninput="filterEmails()" />
+      <div class="filter-chips">
+        <button class="chip active" onclick="setFilter('all', this)">All</button>
+        <button class="chip" onclick="setFilter('SAFE', this)">✅ Safe</button>
+        <button class="chip" onclick="setFilter('MEDIUM_RISK', this)">⚠️ Medium</button>
+        <button class="chip" onclick="setFilter('HIGH_RISK', this)">🔴 High Risk</button>
+      </div>
+    </div>
+    <div class="email-list" id="email-list">
+      <!-- populated by JS -->
+    </div>
+  </section>
+
+  <!-- ═══ VIEW: BLOCKED ═══ -->
+  <section class="view hidden" id="view-blocked">
+    <div class="section-header">
+      <h2>Blocked &amp; Flagged Emails</h2>
+      <span class="section-sub">Emails intercepted by DomainShield policy</span>
+    </div>
+    <div class="email-list" id="blocked-list"></div>
+  </section>
+
+  <!-- ═══ VIEW: POLICY ═══ -->
+  <section class="view hidden" id="view-policy">
+    <div class="policy-grid">
+      <!-- Whitelist -->
+      <div class="policy-card">
+        <div class="policy-card-header">
+          <h3>✅ Trusted Domain Whitelist</h3>
+          <span class="domain-count" id="wl-count">0 domains</span>
+        </div>
+        <div class="whitelist-list" id="whitelist-list"></div>
+        <div class="add-domain-row">
+          <input id="new-domain-input" class="input-field" type="text" placeholder="e.g. evil.com, bank.com" />
+          <button class="btn btn-primary small" onclick="addDomain()" title="Adds domain if new, removes if exists">+/- Add/Remove</button>
+        </div>
+      </div>
+
+      <!-- Settings -->
+      <div class="policy-card">
+        <div class="policy-card-header">
+          <h3>⚙️ Agent Settings</h3>
+        </div>
+        <div class="settings-list">
+          <div class="setting-row">
+            <div>
+              <div class="setting-name">Strict Mode</div>
+              <div class="setting-desc">Block (not just warn) on suspicious emails</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="policy-strict" checked onchange="updateSetting('strict_mode', this.checked)" />
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="setting-row">
+            <div>
+              <div class="setting-name">Alert Threshold</div>
+              <div class="setting-desc">Minimum risk level to generate alerts</div>
+            </div>
+            <select class="select-field" id="alert-threshold" onchange="updateSetting('alert_threshold', this.value)">
+              <option value="high_only">High only</option>
+              <option value="medium_and_above" selected>Medium &amp; above</option>
+              <option value="all">All emails</option>
+            </select>
+          </div>
+          <div class="setting-row">
+            <div>
+              <div class="setting-name">Webhook URL</div>
+              <div class="setting-desc">Slack / SIEM alert forwarding endpoint</div>
+            </div>
+            <input class="input-field small" id="webhook-url" type="text" placeholder="https://hooks.slack.com/…" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ VIEW: LOGS ═══ -->
+  <section class="view hidden" id="view-logs">
+    <div class="logs-toolbar">
+      <h2>Audit Log</h2>
+      <button class="btn btn-ghost" onclick="exportCSV()">⬇ Export CSV</button>
+    </div>
+    <div class="log-table-wrap">
+      <table class="log-table" id="log-table">
+        <thead>
+          <tr>
+            <th>Timestamp</th>
+            <th>UID</th>
+            <th>From</th>
+            <th>Domain</th>
+            <th>Subject</th>
+            <th>Risk</th>
+            <th>Action</th>
+            <th>Reasons</th>
+          </tr>
+        </thead>
+        <tbody id="log-body"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ═══ VIEW: ANALYTICS ═══ -->
+  <section class="view hidden" id="view-analytics">
+    <div class="analytics-grid">
+      <div class="chart-card">
+        <h3>Risk Distribution</h3>
+        <div class="donut-wrap">
+          <svg viewBox="0 0 120 120" class="donut-svg" id="donut-svg"></svg>
+          <div class="donut-legend" id="donut-legend"></div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <h3>Top Blocked Domains</h3>
+        <div class="bar-list" id="bar-list"></div>
+      </div>
+      <div class="chart-card wide">
+        <h3>Detection Signals Breakdown</h3>
+        <div class="signal-grid" id="signal-grid"></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ═══════════════════════ EMAIL DETAIL MODAL ═══════════════════════ -->
+<div class="modal-backdrop hidden" id="modal-backdrop" onclick="closeModal()">
+  <div class="modal" onclick="event.stopPropagation()" id="email-modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ TOAST ═══════════════════════ -->
+<div class="toast-container" id="toast-container"></div>
+
+<script src="config.js"></script>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

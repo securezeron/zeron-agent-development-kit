@@ -1,0 +1,8 @@
+{
+  "whitelist_domains": ["company.com", "trustedpartner.com"],
+  "strict_mode": true,
+  "alert_threshold": "medium_and_above",
+  "webhook_url": "",
+  "last_modified": "",
+  "modified_by": "system"
+}

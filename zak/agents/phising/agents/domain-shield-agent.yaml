@@ -1,0 +1,108 @@
+name: domain-shield-agent
+version: "1.0.0"
+description: >
+  AI-powered phishing detection agent that enforces strict domain whitelisting
+  on incoming emails. Flags, categorizes, and alerts on any email sourced from
+  domains outside the approved whitelist using SPF/DKIM/DMARC header analysis.
+
+domain: email_security
+
+metadata:
+  author: ZAK Platform
+  tags: [phishing, email-security, domain-whitelist, zero-trust, siem]
+  compliance: [SOC2, ISO27001, CIS-Controls]
+
+# ─── Capabilities ───────────────────────────────────────────────────────────
+capabilities:
+  tools:
+    - action_id: ingest_email
+    - action_id: parse_email_headers
+    - action_id: verify_domain_whitelist
+    - action_id: check_spf_alignment
+    - action_id: check_dkim_alignment
+    - action_id: check_dmarc_alignment
+    - action_id: detect_display_name_spoof
+    - action_id: detect_subdomain_spoof
+    - action_id: normalize_domain
+    - action_id: classify_phishing_risk
+    - action_id: generate_alert
+    - action_id: log_email_event
+    - action_id: export_audit_log
+    - action_id: manage_whitelist
+    - action_id: forward_webhook_alert
+
+# ─── Policy ─────────────────────────────────────────────────────────────────
+policy:
+  strict_mode: true            # block (not just warn) on suspicious emails
+  approval_gate: none          # fully autonomous; no human-in-the-loop prompts
+  require_elevation: false
+  max_batch_size: 500          # emails processed per agent run
+  alert_on_error: true
+
+# ─── Boundaries ─────────────────────────────────────────────────────────────
+boundaries:
+  allowed_actions:
+    - ingest_email
+    - parse_email_headers
+    - verify_domain_whitelist
+    - check_spf_alignment
+    - check_dkim_alignment
+    - check_dmarc_alignment
+    - detect_display_name_spoof
+    - detect_subdomain_spoof
+    - normalize_domain
+    - classify_phishing_risk
+    - generate_alert
+    - log_email_event
+    - export_audit_log
+    - manage_whitelist
+    - forward_webhook_alert
+  disallowed_actions:
+    - delete_email_permanently   # audit trail must be preserved
+    - modify_email_content       # no tampering with email body
+
+# ─── Inputs ─────────────────────────────────────────────────────────────────
+inputs:
+  whitelist_domains:
+    type: list[string]
+    required: true
+    example: ["company.com", "trustedpartner.com"]
+  strict_mode:
+    type: boolean
+    default: true
+  alert_threshold:
+    type: string
+    enum: [high_only, medium_and_above, all]
+    default: medium_and_above
+  webhook_url:
+    type: string
+    required: false
+  imap_host:
+    type: string
+    required: false
+  imap_port:
+    type: integer
+    default: 993
+  imap_user:
+    type: string
+    required: false
+  imap_password:
+    type: string
+    required: false
+
+# ─── Outputs ────────────────────────────────────────────────────────────────
+outputs:
+  processed_count:
+    type: integer
+  safe_count:
+    type: integer
+  suspicious_count:
+    type: integer
+  high_risk_count:
+    type: integer
+  medium_risk_count:
+    type: integer
+  alerts:
+    type: list[object]
+  audit_log_path:
+    type: string
