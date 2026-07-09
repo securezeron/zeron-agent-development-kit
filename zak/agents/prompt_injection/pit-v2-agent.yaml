@@ -1,0 +1,74 @@
+agent:
+  id: pit-agent-v2
+  name: "Prompt Injection Tester Agent v2"
+  domain: appsec
+  version: "2.0.0"
+
+intent:
+  goal: >
+    Multi-phase AI red team security testing. Profile the target, run basic
+    injection scan with canary tokens, escalate with specialist tools, mutate
+    confirmed payloads with 5 techniques, and generate a comprehensive PDF report.
+  success_criteria:
+    - "Phase 0 target profiling completed"
+    - "Phase 1 basic scan with canary token detection completed"
+    - "Phase 2 specialist tools fired for all categories"
+    - "Phase 3 mutation fuzzer applied to confirmed vulnerabilities"
+    - "PDF security report generated with all findings"
+  priority: high
+
+reasoning:
+  mode: deterministic
+  autonomy_level: bounded
+  confidence_threshold: 0.75
+
+capabilities:
+  tools:
+    - profile_target
+    - load_payloads_v2
+    - fire_probe_v2
+    - analyze_response_v2
+    - fuzz_json_injection
+    - fuzz_encoding_bypass
+    - fuzz_token_smuggling
+    - fuzz_multilingual
+    - fuzz_fictional_framing
+    - fuzz_chain_of_thought
+    - deep_fuzz_target
+    - generate_pdf_report_v2
+  data_access:
+    - ollama_local
+    - http_target_endpoint
+
+boundaries:
+  risk_budget: medium
+  allowed_actions:
+    - agent_execute
+    - profile_target
+    - load_payloads_v2
+    - fire_probe_v2
+    - analyze_response_v2
+    - fuzz_json_injection
+    - fuzz_encoding_bypass
+    - fuzz_token_smuggling
+    - fuzz_multilingual
+    - fuzz_fictional_framing
+    - fuzz_chain_of_thought
+    - deep_fuzz_target
+    - generate_pdf_report_v2
+  denied_actions:
+    - delete_asset
+    - write_to_production
+  environment_scope:
+    - staging
+    - production
+  approval_gates:
+    - fire_probe_v2
+
+safety:
+  guardrails:
+    - no_destructive_actions
+    - require_confidence_threshold
+    - redact_secrets
+  sandbox_profile: standard
+  audit_level: verbose
